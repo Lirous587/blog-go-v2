@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8.3.0
+    container_name: blog_mysql
+    environment:
+      #配置你的密码
+      MYSQL_ROOT_PASSWORD: liuzihao520
+      MYSQL_DATABASE: blog
+      LANG: C.UTF-8
+        - TZ=Asia/Shanghai
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # 注意这里的路径映射  默认情况下，MySQL容器的入口脚本会自动执行/docker-entrypoint-initdb.d/目录下的SQL文件。
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    restart: always
+    healthcheck:
+      test: ["CMD","mysqladmin","ping","-h","localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: redis:7.4.0
+    container_name: blog_redis
+    ports:
+      - "16379:6379"
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - redis_data:/data
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./log/redis.log:/log/redis.log
+    #配置文件启动
+    command: redis-server /usr/local/etc/redis/redis.conf
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  blog:
+    container_name: blog
+    build:
+      context: .
+      dockerfile: Dockerfile  # 指定你的 Dockerfile 文件路径
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - ../blog-statics//img:/app/statics/img  # 将本地图片文件夹挂载到容器中的对应路径
+      - ./log/blog.log:/app/log/blog.log
+      - ./static/file:/app/statics/file
+
+volumes:
+  mysql_data:
+  redis_data:
