@@ -7,6 +7,50 @@ import (
 	"sync"
 )
 
+type HeartWordsMysql struct {
+	data *models.HeartWordsData
+}
+
+func NewHeartWordsMysql(data *models.HeartWordsData) models.OneCruder[models.HeartWordsData] {
+	return &HeartWordsMysql{
+		data: data,
+	}
+}
+
+func (h *HeartWordsMysql) Create(data *models.HeartWordsData) error {
+	sqlStr := `INSERT INTO heart_words(content, source,img_id,if_could_type) VALUES (:content,:source,:img_id,:if_could_type)`
+	_, err := db.NamedExec(sqlStr, data)
+	return err
+}
+
+func (h *HeartWordsMysql) Read(id int) (data *models.HeartWordsData, err error) {
+	sqlStr := `SELECT content,source,img_id,if_could_type FROM heart_words WHERE id = ?`
+	err = db.Get(data, sqlStr, id)
+	return data, err
+}
+
+func (h *HeartWordsMysql) Update(data *models.HeartWordsData) error {
+	sqlStr := `UPDATE heart_words SET  content = :content,source = :source,img_id = :img_id, if_could_type = :if_could_type WHERE id = :id`
+	_, err := db.NamedExec(sqlStr, data)
+	return err
+}
+
+func (h *HeartWordsMysql) Delete(id int) error {
+	sqlStr := `DELETE FROM heart_words WHERE id = ?`
+	_, err := db.Exec(sqlStr, id)
+	return err
+}
+
+func GetTypeHeartWords(data *[]models.HeartWordsData) error {
+	sqlStr := `
+			SELECT h.id,h.content,h.source,h.img_id, g.img_url FROM  heart_words h 
+			    LEFT JOIN blog.gallery g on g.id = h.img_id                     
+			    WHERE if_could_type = 1
+			`
+	err := db.Select(data, sqlStr)
+	return err
+}
+
 func GetHeartWordsList(data *models.HeartWordsListAndPage, query models.HeartWordsQuery) error {
 	var wg sync.WaitGroup
 	taskCount := 2
@@ -97,33 +141,4 @@ func getHeartWordsCount(data *models.HeartWordsListAndPage, PageSize int, whereC
 
 	data.TotalPage = (totalCount + PageSize - 1) / PageSize
 	return nil
-}
-
-func CreateHeartWords(p *models.HeartWordsParams) error {
-	fmt.Printf("%+v", p)
-	sqlStr := `INSERT INTO heart_words(content, source,img_id,if_could_type) VALUES (:content,:source,:img_id,:if_could_type)`
-	_, err := db.NamedExec(sqlStr, p)
-	return err
-}
-
-func DeleteHeartWords(id int) error {
-	sqlStr := `DELETE FROM heart_words WHERE id = ?`
-	_, err := db.Exec(sqlStr, id)
-	return err
-}
-
-func UpdateHeartWords(p *models.HeartWordsUpdateParams) error {
-	sqlStr := `UPDATE heart_words SET  content = :content,source = :source,img_id = :img_id, if_could_type = :if_could_type WHERE id = :id`
-	_, err := db.NamedExec(sqlStr, p)
-	return err
-}
-
-func GetTypeHeartWords(data *[]models.HeartWordsData) error {
-	sqlStr := `
-			SELECT h.id,h.content,h.source,h.img_id, g.img_url FROM  heart_words h 
-			    LEFT JOIN blog.gallery g on g.id = h.img_id                     
-			    WHERE if_could_type = 1
-			`
-	err := db.Select(data, sqlStr)
-	return err
 }
