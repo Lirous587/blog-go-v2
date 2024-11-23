@@ -4,11 +4,57 @@ import (
 	"blog/models"
 	"blog/utils"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	"strings"
 	"sync"
 )
 
-func GetGalleryList(data *models.GalleryListAndPage, query models.GalleryQuery) error {
+type GalleryMysqlImpl struct {
+	db *sqlx.DB
+}
+
+type GalleryMysql interface {
+	Create(data *models.GalleryData) error
+	Read(id int) (*models.GalleryData, error)
+	Update(data *models.GalleryData) error
+	Delete(id int) error
+	GetList(query models.GalleryQuery) (*models.GalleryListAndPage, error)
+	getList(data *models.GalleryListAndPage, whereClause string, args []interface{}) error
+	getCount(data *models.GalleryListAndPage, PageSize int, whereClause string, args []interface{}) error
+}
+
+func NewGalleryMysql(db *sqlx.DB) GalleryMysql {
+	return &GalleryMysqlImpl{
+		db: db,
+	}
+}
+
+func (h *GalleryMysqlImpl) Create(data *models.GalleryData) error {
+	data.ImgUrl = utils.SanitizedFileName(data.ImgUrl)
+	sqlStr := `INSERT INTO gallery(img_url, kind_id) VALUES (:img_url,:kind_id)`
+	_, err := h.db.NamedExec(sqlStr, data)
+	return err
+}
+
+func (h *GalleryMysqlImpl) Read(id int) (data *models.GalleryData, err error) {
+	sqlStr := `SELECT content,source,img_id,if_could_type FROM heart_words WHERE id = ?`
+	err = h.db.Get(data, sqlStr, id)
+	return data, err
+}
+
+func (h *GalleryMysqlImpl) Update(data *models.GalleryData) error {
+	sqlStr := `UPDATE gallery SET img_url = :img_url,kind_id = :kind_id WHERE id = :id`
+	_, err := db.NamedExec(sqlStr, data)
+	return err
+}
+
+func (h *GalleryMysqlImpl) Delete(id int) error {
+	sqlStr := `DELETE FROM gallery WHERE id = ?`
+	_, err := db.Exec(sqlStr, id)
+	return err
+}
+
+func (h *GalleryMysqlImpl) GetList(query models.GalleryQuery) (data *models.GalleryListAndPage, err error) {
 	var wg sync.WaitGroup
 	taskCount := 2
 	var errChan = make(chan error, taskCount)
@@ -34,7 +80,7 @@ func GetGalleryList(data *models.GalleryListAndPage, query models.GalleryQuery) 
 
 	go func() {
 		defer wg.Done()
-		if err := getGalleryList(data, whereClause, args); err != nil {
+		if err := h.getList(data, whereClause, args); err != nil {
 			errChan <- fmt.Errorf("getList failed,err:%w", err)
 			return
 		}
@@ -42,7 +88,7 @@ func GetGalleryList(data *models.GalleryListAndPage, query models.GalleryQuery) 
 
 	go func() {
 		defer wg.Done()
-		if err := getGalleryCount(data, query.PageSize, whereClause, args); err != nil {
+		if err := h.getCount(data, query.PageSize, whereClause, args); err != nil {
 			errChan <- fmt.Errorf("getCount failed,err:%w", err)
 			return
 		}
@@ -52,16 +98,15 @@ func GetGalleryList(data *models.GalleryListAndPage, query models.GalleryQuery) 
 
 	close(errChan)
 
-	for err := range errChan {
+	for err = range errChan {
 		if err != nil {
-			return err
+			return
 		}
 	}
-
-	return nil
+	return
 }
 
-func getGalleryList(data *models.GalleryListAndPage, whereClause string, args []interface{}) error {
+func (h *GalleryMysqlImpl) getList(data *models.GalleryListAndPage, whereClause string, args []interface{}) error {
 	rawDataList := make([]models.GalleryData, 0, 10)
 	baseSelect := `
         SELECT g.id,g.img_url,g.kind_id,k.name
@@ -86,7 +131,7 @@ func getGalleryList(data *models.GalleryListAndPage, whereClause string, args []
 	return nil
 }
 
-func getGalleryCount(data *models.GalleryListAndPage, PageSize int, whereClause string, args []interface{}) error {
+func (h *GalleryMysqlImpl) getCount(data *models.GalleryListAndPage, PageSize int, whereClause string, args []interface{}) error {
 	baseSql := `
         SELECT COUNT(DISTINCT g.id)
         FROM gallery g  
@@ -100,23 +145,4 @@ func getGalleryCount(data *models.GalleryListAndPage, PageSize int, whereClause 
 
 	data.TotalPage = (totalCount + PageSize - 1) / PageSize
 	return nil
-}
-
-func CreateGallery(p *models.GalleryParams) error {
-	p.Url = utils.SanitizedFileName(p.Url)
-	sqlStr := `INSERT INTO gallery(img_url, kind_id) VALUES (:img_url,:kind_id)`
-	_, err := db.NamedExec(sqlStr, p)
-	return err
-}
-
-func DeleteGallery(id int) error {
-	sqlStr := `DELETE FROM gallery WHERE id = ?`
-	_, err := db.Exec(sqlStr, id)
-	return err
-}
-
-func UpdateGallery(p *models.GalleryUpdateParams) error {
-	sqlStr := `UPDATE gallery SET img_url = :img_url,kind_id = :kind_id WHERE id = :id`
-	_, err := db.NamedExec(sqlStr, p)
-	return err
 }

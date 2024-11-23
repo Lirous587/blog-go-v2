@@ -28,6 +28,7 @@ func SetupRouter(mode string) *gin.Engine {
 
 	// 初始化控制器
 	heartWordsCtl := InitHeartWordsController()
+	galleryWordsCtl := InitGalleryController()
 
 	v0 := r.Group("/api/base")
 	v0.Use(middlewares.SaveUserIp())
@@ -51,7 +52,7 @@ func SetupRouter(mode string) *gin.Engine {
 	}
 
 	v3Cache := r.Group("/api/admin")
-	v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateDataMiddleware())
+	//v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateDataMiddleware())
 	{
 		// essay
 		v3Cache.POST("/essay", controller.CreateEssayHandler)
@@ -67,11 +68,6 @@ func SetupRouter(mode string) *gin.Engine {
 		v3Cache.POST("/kind", controller.CreateKindHandler)
 		v3Cache.DELETE("/kind", controller.DeleteKindHandler)
 		v3Cache.PUT("/kind", controller.UpdateKindHandler)
-
-		//heartWord
-		v3Cache.POST("/heartWords", heartWordsCtl.Create)
-		v3Cache.DELETE("/heartWords", heartWordsCtl.Delete)
-		v3Cache.PUT("/heartWords", heartWordsCtl.Update)
 	}
 
 	v3NoCache := r.Group("/api/admin")
@@ -80,13 +76,18 @@ func SetupRouter(mode string) *gin.Engine {
 		// 上传图片
 		v3NoCache.POST("/uploadImg", controller.UploadImgHandler)
 		// 主页数据
-		v3NoCache.GET("/panel", controller.ResponseDataAboutManagerPanel)
+		//v3NoCache.GET("/panel", controller.ResponseDataAboutManagerPanel)
+
+		//heartWord
+		v3Cache.POST("/heartWords", heartWordsCtl.Create)
+		v3Cache.DELETE("/heartWords", heartWordsCtl.Delete)
+		v3Cache.PUT("/heartWords", heartWordsCtl.Update)
 
 		//gallery
-		v3NoCache.GET("/gallery_list", controller.ResponseGalleryListHandler)
-		v3NoCache.POST("/gallery", controller.CreateGalleryHandler)
-		v3NoCache.DELETE("/gallery", controller.DeleteGalleryHandler)
-		v3NoCache.PUT("/gallery", controller.UpdateGalleryHandler)
+		v3NoCache.GET("/gallery_list", galleryWordsCtl.GetList)
+		v3NoCache.POST("/gallery", galleryWordsCtl.Create)
+		v3NoCache.DELETE("/gallery", galleryWordsCtl.Delete)
+		v3NoCache.PUT("/gallery", galleryWordsCtl.Update)
 
 		//galleryKind
 		v3NoCache.GET("/galleryKind_list", controller.ResponseGalleryKindListHandler)
