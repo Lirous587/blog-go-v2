@@ -26,6 +26,9 @@ func SetupRouter(mode string) *gin.Engine {
 	r.Static("/api/img", "/app/statics/img")
 	r.Static("/api/file", "/app/statics/file")
 
+	// 初始化控制器
+	heartWordsCtl := InitHeartWordsController()
+
 	v0 := r.Group("/api/base")
 	v0.Use(middlewares.SaveUserIp())
 	{
@@ -36,7 +39,7 @@ func SetupRouter(mode string) *gin.Engine {
 	{
 		v1.GET("/essay_list", controller.ResponseEssayListHandler)
 		v1.GET("/essay_content", controller.ResponseEssayDataHandler)
-		v1.GET("/heartWords_list", controller.ResponseHeardWordsListHandler)
+		v1.GET("/heartWords_list", heartWordsCtl.GetList)
 	}
 
 	v2 := r.Group("/api/admin")
@@ -66,9 +69,9 @@ func SetupRouter(mode string) *gin.Engine {
 		v3Cache.PUT("/kind", controller.UpdateKindHandler)
 
 		//heartWord
-		v3Cache.POST("/heartWords", controller.CreateHeartWordsHandler)
-		v3Cache.DELETE("/heartWords", controller.DeleteHeartWordsHandler)
-		v3Cache.PUT("/heartWords", controller.UpdateHeartWordsHandler)
+		v3Cache.POST("/heartWords", heartWordsCtl.Create)
+		v3Cache.DELETE("/heartWords", heartWordsCtl.Delete)
+		v3Cache.PUT("/heartWords", heartWordsCtl.Update)
 	}
 
 	v3NoCache := r.Group("/api/admin")

@@ -9,72 +9,77 @@ import (
 	"strconv"
 )
 
-func newHeartWordsData() *models.HeartWordsData {
-	return &models.HeartWordsData{}
+type HeartWordsController struct {
+	service server.HeartWordsServer
 }
 
-func CreateHeartWordsHandler(c *gin.Context) {
-	data := newHeartWordsData()
-	obj := server.NewHeartWordsServer(data)
+func NewHeartWordsController(service server.HeartWordsServer) *HeartWordsController {
+	return &HeartWordsController{
+		service: service,
+	}
+}
+
+func (ctrl *HeartWordsController) Create(c *gin.Context) {
+	data := new(models.HeartWordsData)
 	// 1.参数绑定
 	if err := c.ShouldBindJSON(data); err != nil {
-		zap.L().Error("c.ShouldBindJSON(model) failed,err:", zap.Error(err))
+		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
+
 	// 2.逻辑处理
-	if err := obj.Create(data); err != nil {
-		zap.L().Error("service.Create() failed,err:", zap.Error(err))
+	if err := ctrl.service.Create(data); err != nil {
+		zap.L().Error("ctrl.service.Create(data) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}
+
 	ResponseSuccess(c, createSuccess)
 }
 
-func DeleteHeartWordsHandler(c *gin.Context) {
-	data := newHeartWordsData()
-	obj := server.NewHeartWordsServer(data)
-	//1.获取参数
+func (ctrl *HeartWordsController) Delete(c *gin.Context) {
+	// 1.获取参数
 	qid := c.Query("id")
 	id, err := strconv.Atoi(qid)
 	if err != nil {
-		zap.L().Error("strconv.Atoi(qid) failed,err:", zap.Error(err))
+		zap.L().Error("strconv.Atoi(qid) failed", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
-	data.ID = id
-	//2.逻辑处理
-	if err = obj.Delete(data.ID); err != nil {
-		zap.L().Error("service.Delete() failed,err:", zap.Error(err))
+
+	// 2.逻辑处理
+	if err := ctrl.service.Delete(id); err != nil {
+		zap.L().Error("ctrl.service.Delete(id) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}
-	//3.返回响应
-	ResponseSuccess(c, createSuccess)
+
+	// 3.返回响应
+	ResponseSuccess(c, deleteSuccess)
 }
 
-func UpdateHeartWordsHandler(c *gin.Context) {
-	data := newHeartWordsData()
-	obj := server.NewHeartWordsServer(data)
-	//1.参数检验
+func (ctrl *HeartWordsController) Update(c *gin.Context) {
+	data := new(models.HeartWordsData)
+	// 1.参数检验
 	if err := c.ShouldBindJSON(data); err != nil {
-		zap.L().Error("c.ShouldBindJSON(data) failed,err:", zap.Error(err))
+		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
-	//2.逻辑处理
-	if err := obj.Update(data); err != nil {
-		zap.L().Error("service.Update() failed,err:", zap.Error(err))
+
+	// 2.逻辑处理
+	if err := ctrl.service.Update(data); err != nil {
+		zap.L().Error("ctrl.service.Update(data) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}
-	//3.返回响应
-	ResponseSuccess(c, createSuccess)
+
+	// 3.返回响应
+	ResponseSuccess(c, updateSuccess)
 }
 
-func ResponseHeardWordsListHandler(c *gin.Context) {
-	data := new(models.HeartWordsListAndPage)
-	obj := server.NewHeartWordsServer(data)
+func (ctrl *HeartWordsController) GetList(c *gin.Context) {
 	//	参数处理
 	page := utils.DisposePageQuery(c)
 	query := models.HeartWordsQuery{
@@ -86,9 +91,9 @@ func ResponseHeardWordsListHandler(c *gin.Context) {
 		query.IfCouldType = true
 	}
 
-	list, err := obj.GetList(query)
+	list, err := ctrl.service.GetList(query)
 	if err != nil {
-		zap.L().Error("obj.GetList(query) failed", zap.Error(err))
+		zap.L().Error("ctrl.service.GetList(query) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}

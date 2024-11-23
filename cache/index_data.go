@@ -28,15 +28,15 @@ func refreshData(data *models.IndexData) (err error) {
 		return err
 	}
 
-	var heartWordsList = new([]models.HeartWordsData)
-	if err = mysql.GetTypeHeartWords(heartWordsList); err != nil {
-		return err
-	}
+	//var heartWordsList = new([]models.HeartWordsData)
+	//if err = mysql.GetTypeHeartWords(heartWordsList); err != nil {
+	//	return err
+	//}
 	//整合数据
 	data.KindList = *kindList
 	data.LabelList = *labelList
 	data.EssayList = *essayList
-	data.HeartWordsList = *heartWordsList
+	//data.HeartWordsList = *heartWordsList
 	return nil
 }
 

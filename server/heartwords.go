@@ -5,48 +5,40 @@ import (
 	"blog/models"
 )
 
-type HeartWordsServer struct {
-	data *models.HeartWordsData
+type HeartWordsServer interface {
+	Create(data *models.HeartWordsData) error
+	Read(id int) (*models.HeartWordsData, error)
+	Update(data *models.HeartWordsData) error
+	Delete(id int) error
+	GetList(query models.HeartWordsQuery) (*models.HeartWordsListAndPage, error)
 }
 
-type HeartWordsListServer struct {
-	data *models.HeartWordsData
+type HeartWordsImpl struct {
+	repo mysql.HeartWordsMysql
 }
 
-func NewHeartWordsServer(data *models.HeartWordsData) models.OneCruder[models.HeartWordsData] {
-	return &HeartWordsServer{
-		data: data,
+func NewHeartWordsServer(repo mysql.HeartWordsMysql) HeartWordsServer {
+	return &HeartWordsImpl{
+		repo: repo,
 	}
 }
 
-func NewHeartWordsListServer(data *models.HeartWordsData) *HeartWordsListServer {
-	return &HeartWordsListServer{
-		data: data,
-	}
+func (h *HeartWordsImpl) Create(data *models.HeartWordsData) error {
+	return h.repo.Create(data)
 }
 
-func (hws *HeartWordsServer) Create(data *models.HeartWordsData) error {
-	obj := mysql.NewHeartWordsMysql(data)
-	return obj.Create(data)
+func (h *HeartWordsImpl) Read(id int) (data *models.HeartWordsData, err error) {
+	return h.repo.Read(id)
 }
 
-func (hws *HeartWordsServer) Read(id int) (data *models.HeartWordsData, err error) {
-	obj := mysql.NewHeartWordsMysql(hws.data)
-	return obj.Read(id)
+func (h *HeartWordsImpl) Update(data *models.HeartWordsData) error {
+	return h.repo.Update(data)
 }
 
-func (hws *HeartWordsServer) Update(data *models.HeartWordsData) error {
-	obj := mysql.NewHeartWordsMysql(data)
-	return obj.Update(data)
+func (h *HeartWordsImpl) Delete(id int) error {
+	return h.repo.Delete(id)
 }
 
-func (hws *HeartWordsServer) Delete(id int) error {
-	obj := mysql.NewHeartWordsMysql(hws.data)
-	return obj.Delete(id)
-}
-
-func (hws *HeartWordsListServer) ReadList(query models.HeartWordsQuery) (*models.ListAndPage[models.HeartWordsData], error) {
-	list := &models.ListAndPage[models.HeartWordsData]{}
-	err := mysql.GetHeartWordsList(list, query)
-	return list, err
+func (h *HeartWordsImpl) GetList(query models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
+	return h.repo.GetList(query)
 }
