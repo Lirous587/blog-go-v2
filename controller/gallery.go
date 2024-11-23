@@ -87,7 +87,7 @@ func (ctrl *GalleryController) GetList(c *gin.Context) {
 		PageSize: page.PageSize,
 	}
 
-	kidSize64, _ := strconv.ParseInt(c.Query("kindID"), 10, 64)
+	kidSize64, _ := strconv.ParseInt(c.Query("k_id"), 10, 64)
 	if kidSize64 == 0 {
 		ResponseError(c, CodeParamInvalid)
 		return

@@ -28,7 +28,8 @@ func SetupRouter(mode string) *gin.Engine {
 
 	// 初始化控制器
 	heartWordsCtl := InitHeartWordsController()
-	galleryWordsCtl := InitGalleryController()
+	galleryCtl := InitGalleryController()
+	galleryKindCtl := InitGalleryKindController()
 
 	v0 := r.Group("/api/base")
 	v0.Use(middlewares.SaveUserIp())
@@ -84,16 +85,16 @@ func SetupRouter(mode string) *gin.Engine {
 		v3Cache.PUT("/heartWords", heartWordsCtl.Update)
 
 		//gallery
-		v3NoCache.GET("/gallery_list", galleryWordsCtl.GetList)
-		v3NoCache.POST("/gallery", galleryWordsCtl.Create)
-		v3NoCache.DELETE("/gallery", galleryWordsCtl.Delete)
-		v3NoCache.PUT("/gallery", galleryWordsCtl.Update)
+		v3NoCache.GET("/gallery_list", galleryCtl.GetList)
+		v3NoCache.POST("/gallery", galleryCtl.Create)
+		v3NoCache.DELETE("/gallery", galleryCtl.Delete)
+		v3NoCache.PUT("/gallery", galleryCtl.Update)
 
 		//galleryKind
-		v3NoCache.GET("/galleryKind_list", controller.ResponseGalleryKindListHandler)
-		v3NoCache.POST("/galleryKind", controller.CreateGalleryKindHandler)
-		v3NoCache.DELETE("/galleryKind", controller.DeleteGalleryKindHandler)
-		v3NoCache.PUT("/galleryKind", controller.UpdateGalleryKindHandler)
+		v3NoCache.GET("/galleryKind_list", galleryKindCtl.GetList)
+		v3NoCache.POST("/galleryKind", galleryKindCtl.Create)
+		v3NoCache.DELETE("/galleryKind", galleryKindCtl.Delete)
+		v3NoCache.PUT("/galleryKind", galleryKindCtl.Update)
 	}
 
 	v4 := r.Group("/api/keyword")

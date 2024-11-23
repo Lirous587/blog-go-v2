@@ -20,3 +20,10 @@ func InitGalleryController() *controller.GalleryController {
 	// 初始化控制器
 	return controller.NewGalleryController(galleryService)
 }
+func InitGalleryKindController() *controller.GalleryKindController {
+	// 初始化仓库和服务
+	galleryRepo := mysql.NewGalleryKindMysql(mysql.DB)
+	galleryService := server.NewGalleryKindServer(galleryRepo)
+	// 初始化控制器
+	return controller.NewGalleryKindController(galleryService)
+}

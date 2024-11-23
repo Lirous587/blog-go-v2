@@ -1,77 +1,87 @@
 package controller
 
 import (
-	"blog/logic"
 	"blog/models"
+	"blog/server"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"strconv"
 )
 
-const (
-	createGalleryKindSuccess = "创建图片分类成功"
-	deleteGalleryKindSuccess = "删除图片分类成功"
-	updateGalleryKindSuccess = "修改图片分类成功"
-)
+type GalleryKindController struct {
+	service server.GalleryKindServer
+}
 
-func CreateGalleryKindHandler(c *gin.Context) {
-	p := new(models.GalleryKindParams)
+func NewGalleryKindController(service server.GalleryKindServer) *GalleryKindController {
+	return &GalleryKindController{
+		service: service,
+	}
+}
+
+func (ctrl *GalleryKindController) Create(c *gin.Context) {
+	data := new(models.GalleryKindData)
 	// 1.参数绑定
-	if err := c.ShouldBindJSON(p); err != nil {
-		zap.L().Error("c.ShouldBindJSON(p) failed,err:", zap.Error(err))
+	if err := c.ShouldBindJSON(data); err != nil {
+		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
+
 	// 2.逻辑处理
-	if err := logic.CreateGalleryKind(p); err != nil {
-		zap.L().Error("logic.CreateGalleryKind(p) failed,err:", zap.Error(err))
+	if err := ctrl.service.Create(data); err != nil {
+		zap.L().Error("ctrl.service.Create(data) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}
-	ResponseSuccess(c, createGalleryKindSuccess)
+
+	ResponseSuccess(c, createSuccess)
 }
 
-func DeleteGalleryKindHandler(c *gin.Context) {
-	//1.获取参数
+func (ctrl *GalleryKindController) Delete(c *gin.Context) {
+	// 1.获取参数
 	qid := c.Query("id")
 	id, err := strconv.Atoi(qid)
 	if err != nil {
-		zap.L().Error("strconv.Atoi(qid) failed,err:", zap.Error(err))
+		zap.L().Error("strconv.Atoi(qid) failed", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
-	//2.逻辑处理
-	if err = logic.DeleteGalleryKind(id); err != nil {
-		zap.L().Error("logic.DeleteGalleryKind(id) failed,err:", zap.Error(err))
+
+	// 2.逻辑处理
+	if err := ctrl.service.Delete(id); err != nil {
+		zap.L().Error("ctrl.service.Delete(id) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}
-	//3.返回响应
-	ResponseSuccess(c, deleteGalleryKindSuccess)
+
+	// 3.返回响应
+	ResponseSuccess(c, deleteSuccess)
 }
 
-func UpdateGalleryKindHandler(c *gin.Context) {
-	//1.参数检验
-	var p = new(models.GalleryKindUpdateParams)
-	if err := c.ShouldBindJSON(p); err != nil {
-		zap.L().Error("c.ShouldBindJSON(p) failed,err:", zap.Error(err))
+func (ctrl *GalleryKindController) Update(c *gin.Context) {
+	data := new(models.GalleryKindData)
+	// 1.参数检验
+	if err := c.ShouldBindJSON(data); err != nil {
+		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
-	//2.逻辑处理
-	if err := logic.UpdateGalleryKind(p); err != nil {
-		zap.L().Error("logic.UpdateGalleryKind(p) failed,err:", zap.Error(err))
+
+	// 2.逻辑处理
+	if err := ctrl.service.Update(data); err != nil {
+		zap.L().Error("ctrl.service.Update(data) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}
-	//3.返回响应
-	ResponseSuccess(c, updateGalleryKindSuccess)
+
+	// 3.返回响应
+	ResponseSuccess(c, updateSuccess)
 }
 
-func ResponseGalleryKindListHandler(c *gin.Context) {
-	var list = new(models.GalleryKindList)
-	if err := logic.GetGalleryKindList(list); err != nil {
-		zap.L().Error("logic.GetGalleryList(listAndPage, query) failed", zap.Error(err))
+func (ctrl *GalleryKindController) GetList(c *gin.Context) {
+	list, err := ctrl.service.GetList()
+	if err != nil {
+		zap.L().Error("ctrl.service.GetList() failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}

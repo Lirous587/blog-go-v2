@@ -55,6 +55,7 @@ func (h *GalleryMysqlImpl) Delete(id int) error {
 }
 
 func (h *GalleryMysqlImpl) GetList(query models.GalleryQuery) (data *models.GalleryListAndPage, err error) {
+	data = new(models.GalleryListAndPage)
 	var wg sync.WaitGroup
 	taskCount := 2
 	var errChan = make(chan error, taskCount)
@@ -122,7 +123,6 @@ func (h *GalleryMysqlImpl) getList(data *models.GalleryListAndPage, whereClause 
 	if err := db.Select(&rawDataList, sqlStr, args...); err != nil {
 		return err
 	}
-
 	// 处理查询结果
 	data.GalleryList = make([]models.GalleryData, len(rawDataList))
 	for i, raw := range rawDataList {

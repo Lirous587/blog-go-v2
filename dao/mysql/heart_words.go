@@ -52,8 +52,8 @@ func (h *HeartWordsMysqlImpl) Delete(id int) error {
 	return err
 }
 
-func (h *HeartWordsMysqlImpl) GetList(query models.HeartWordsQuery) (*models.HeartWordsListAndPage, error) {
-	data := &models.HeartWordsListAndPage{}
+func (h *HeartWordsMysqlImpl) GetList(query models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
+	data = new(models.HeartWordsListAndPage)
 	var wg sync.WaitGroup
 	taskCount := 2
 	var errChan = make(chan error, taskCount)
