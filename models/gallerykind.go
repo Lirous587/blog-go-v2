@@ -6,5 +6,6 @@ type GalleryKindData struct {
 }
 
 type GalleryKindList struct {
-	List []GalleryKindData `json:"list"`
+	List       []GalleryKindData `json:"list"`
+	TotalPages int               `json:"total_pages"`
 }

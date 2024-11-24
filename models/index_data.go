@@ -1,8 +1,8 @@
 package models
 
 type IndexData struct {
-	KindList       []KindData       `json:"kindList"`
-	LabelList      []LabelData      `json:"labelList"`
-	EssayList      []EssayData      `json:"essayList"`
-	HeartWordsList []HeartWordsData `json:"heartWordsList"`
+	KindList       []KindData       `json:"kind_list"`
+	LabelList      []LabelData      `json:"label_list"`
+	EssayList      []EssayData      `json:"essay_list"`
+	HeartWordsList []HeartWordsData `json:"heart_words_list"`
 }

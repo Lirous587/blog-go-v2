@@ -143,6 +143,6 @@ func (r *GalleryRepoMySQL) getCount(data *models.GalleryListAndPage, PageSize in
 		return err
 	}
 
-	data.TotalPage = (totalCount + PageSize - 1) / PageSize
+	data.TotalPages = (totalCount + PageSize - 1) / PageSize
 	return nil
 }

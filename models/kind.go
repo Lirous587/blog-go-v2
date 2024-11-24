@@ -5,7 +5,7 @@ type KindData struct {
 	Name         string `json:"name" db:"name"`
 	Icon         string `json:"icon" db:"icon"`
 	Introduction string `json:"introduction" db:"introduction"`
-	EssayCount   int    `json:"essayCount" db:"essay_count"`
+	EssayCount   int    `json:"essay_count" db:"essay_count"`
 }
 
 type KindParams struct {

@@ -136,6 +136,6 @@ func (r *HeartWordsRepoMySQL) getCount(data *models.HeartWordsListAndPage, PageS
 		return err
 	}
 
-	data.TotalPage = (totalCount + PageSize - 1) / PageSize
+	data.TotalPages = (totalCount + PageSize - 1) / PageSize
 	return nil
 }

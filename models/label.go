@@ -4,7 +4,7 @@ type LabelData struct {
 	ID           int    `json:"id" db:"id"`
 	Name         string `json:"name"  db:"name"`
 	Introduction string `json:"introduction,omitempty"  db:"introduction"`
-	EssayCount   int8   `json:"essayCount" db:"essay_count"`
+	EssayCount   int8   `json:"essay_count" db:"essay_count"`
 }
 
 type LabelParams struct {

@@ -16,5 +16,5 @@ type HeartWordsQuery struct {
 
 type HeartWordsListAndPage struct {
 	HeartWordsList []HeartWordsData `json:"list,omitempty"`
-	TotalPage      int              `json:"totalPage,omitempty"`
+	TotalPages     int              `json:"total_pages,omitempty"`
 }

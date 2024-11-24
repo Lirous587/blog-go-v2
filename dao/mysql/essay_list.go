@@ -149,7 +149,7 @@ func getEssayCount(data *models.EssayListAndPage, PageSize int, whereClause stri
 		return err
 	}
 
-	data.TotalPage = (totalCount + PageSize - 1) / PageSize
+	data.TotalPages = (totalCount + PageSize - 1) / PageSize
 	return nil
 }
 
