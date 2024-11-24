@@ -1,4 +1,4 @@
-package mysql
+package repository
 
 import (
 	"blog/models"
@@ -9,11 +9,7 @@ import (
 	"sync"
 )
 
-type GalleryMysqlImpl struct {
-	db *sqlx.DB
-}
-
-type GalleryMysql interface {
+type GalleryRepo interface {
 	Create(data *models.GalleryData) error
 	Read(id int) (*models.GalleryData, error)
 	Update(data *models.GalleryData) error
@@ -23,38 +19,42 @@ type GalleryMysql interface {
 	getCount(data *models.GalleryListAndPage, PageSize int, whereClause string, args []interface{}) error
 }
 
-func NewGalleryMysql(db *sqlx.DB) GalleryMysql {
-	return &GalleryMysqlImpl{
+type GalleryRepoMySQL struct {
+	db *sqlx.DB
+}
+
+func NewGalleryRepoMySQL(db *sqlx.DB) *GalleryRepoMySQL {
+	return &GalleryRepoMySQL{
 		db: db,
 	}
 }
 
-func (h *GalleryMysqlImpl) Create(data *models.GalleryData) error {
+func (r *GalleryRepoMySQL) Create(data *models.GalleryData) error {
 	data.ImgUrl = utils.SanitizedFileName(data.ImgUrl)
 	sqlStr := `INSERT INTO gallery(img_url, kind_id) VALUES (:img_url,:kind_id)`
-	_, err := h.db.NamedExec(sqlStr, data)
+	_, err := r.db.NamedExec(sqlStr, data)
 	return err
 }
 
-func (h *GalleryMysqlImpl) Read(id int) (data *models.GalleryData, err error) {
+func (r *GalleryRepoMySQL) Read(id int) (data *models.GalleryData, err error) {
 	sqlStr := `SELECT content,source,img_id,if_could_type FROM heart_words WHERE id = ?`
-	err = h.db.Get(data, sqlStr, id)
+	err = r.db.Get(data, sqlStr, id)
 	return data, err
 }
 
-func (h *GalleryMysqlImpl) Update(data *models.GalleryData) error {
+func (r *GalleryRepoMySQL) Update(data *models.GalleryData) error {
 	sqlStr := `UPDATE gallery SET img_url = :img_url,kind_id = :kind_id WHERE id = :id`
-	_, err := db.NamedExec(sqlStr, data)
+	_, err := r.db.NamedExec(sqlStr, data)
 	return err
 }
 
-func (h *GalleryMysqlImpl) Delete(id int) error {
+func (r *GalleryRepoMySQL) Delete(id int) error {
 	sqlStr := `DELETE FROM gallery WHERE id = ?`
-	_, err := db.Exec(sqlStr, id)
+	_, err := r.db.Exec(sqlStr, id)
 	return err
 }
 
-func (h *GalleryMysqlImpl) GetList(query models.GalleryQuery) (data *models.GalleryListAndPage, err error) {
+func (r *GalleryRepoMySQL) GetList(query models.GalleryQuery) (data *models.GalleryListAndPage, err error) {
 	data = new(models.GalleryListAndPage)
 	var wg sync.WaitGroup
 	taskCount := 2
@@ -81,7 +81,7 @@ func (h *GalleryMysqlImpl) GetList(query models.GalleryQuery) (data *models.Gall
 
 	go func() {
 		defer wg.Done()
-		if err := h.getList(data, whereClause, args); err != nil {
+		if err := r.getList(data, whereClause, args); err != nil {
 			errChan <- fmt.Errorf("getList failed,err:%w", err)
 			return
 		}
@@ -89,7 +89,7 @@ func (h *GalleryMysqlImpl) GetList(query models.GalleryQuery) (data *models.Gall
 
 	go func() {
 		defer wg.Done()
-		if err := h.getCount(data, query.PageSize, whereClause, args); err != nil {
+		if err := r.getCount(data, query.PageSize, whereClause, args); err != nil {
 			errChan <- fmt.Errorf("getCount failed,err:%w", err)
 			return
 		}
@@ -107,7 +107,7 @@ func (h *GalleryMysqlImpl) GetList(query models.GalleryQuery) (data *models.Gall
 	return
 }
 
-func (h *GalleryMysqlImpl) getList(data *models.GalleryListAndPage, whereClause string, args []interface{}) error {
+func (r *GalleryRepoMySQL) getList(data *models.GalleryListAndPage, whereClause string, args []interface{}) error {
 	rawDataList := make([]models.GalleryData, 0, 10)
 	baseSelect := `
         SELECT g.id,g.img_url,g.kind_id,k.name
@@ -120,7 +120,7 @@ func (h *GalleryMysqlImpl) getList(data *models.GalleryListAndPage, whereClause 
 	sqlStr := fmt.Sprintf("%s %s %s  LIMIT ? OFFSET ?",
 		baseSelect, whereClause, orderBy)
 
-	if err := db.Select(&rawDataList, sqlStr, args...); err != nil {
+	if err := r.db.Select(&rawDataList, sqlStr, args...); err != nil {
 		return err
 	}
 	// 处理查询结果
@@ -131,7 +131,7 @@ func (h *GalleryMysqlImpl) getList(data *models.GalleryListAndPage, whereClause 
 	return nil
 }
 
-func (h *GalleryMysqlImpl) getCount(data *models.GalleryListAndPage, PageSize int, whereClause string, args []interface{}) error {
+func (r *GalleryRepoMySQL) getCount(data *models.GalleryListAndPage, PageSize int, whereClause string, args []interface{}) error {
 	baseSql := `
         SELECT COUNT(DISTINCT g.id)
         FROM gallery g  
@@ -139,7 +139,7 @@ func (h *GalleryMysqlImpl) getCount(data *models.GalleryListAndPage, PageSize in
 
 	var totalCount int
 	sqlStr := fmt.Sprintf("%s %s", baseSql, whereClause)
-	if err := db.Get(&totalCount, sqlStr, args[:len(args)-2]...); err != nil {
+	if err := r.db.Get(&totalCount, sqlStr, args[:len(args)-2]...); err != nil {
 		return err
 	}
 

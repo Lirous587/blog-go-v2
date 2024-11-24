@@ -1,8 +1,8 @@
 package server
 
 import (
-	"blog/dao/mysql"
 	"blog/models"
+	"blog/repository"
 )
 
 type GalleryServer interface {
@@ -13,32 +13,32 @@ type GalleryServer interface {
 	GetList(query models.GalleryQuery) (*models.GalleryListAndPage, error)
 }
 
-type GalleryImpl struct {
-	repo mysql.GalleryMysql
+type RepoGalleryService struct {
+	repo repository.GalleryRepo
 }
 
-func NewGalleryServer(repo mysql.GalleryMysql) GalleryServer {
-	return &GalleryImpl{
+func NewRepoGalleryService(repo repository.GalleryRepo) *RepoGalleryService {
+	return &RepoGalleryService{
 		repo: repo,
 	}
 }
 
-func (h *GalleryImpl) Create(data *models.GalleryData) error {
-	return h.repo.Create(data)
+func (s *RepoGalleryService) Create(data *models.GalleryData) error {
+	return s.repo.Create(data)
 }
 
-func (h *GalleryImpl) Read(id int) (data *models.GalleryData, err error) {
-	return h.repo.Read(id)
+func (s *RepoGalleryService) Read(id int) (data *models.GalleryData, err error) {
+	return s.repo.Read(id)
 }
 
-func (h *GalleryImpl) Update(data *models.GalleryData) error {
-	return h.repo.Update(data)
+func (s *RepoGalleryService) Update(data *models.GalleryData) error {
+	return s.repo.Update(data)
 }
 
-func (h *GalleryImpl) Delete(id int) error {
-	return h.repo.Delete(id)
+func (s *RepoGalleryService) Delete(id int) error {
+	return s.repo.Delete(id)
 }
 
-func (h *GalleryImpl) GetList(query models.GalleryQuery) (data *models.GalleryListAndPage, err error) {
-	return h.repo.GetList(query)
+func (s *RepoGalleryService) GetList(query models.GalleryQuery) (data *models.GalleryListAndPage, err error) {
+	return s.repo.GetList(query)
 }
