@@ -1,8 +1,8 @@
 package server
 
 import (
-	"blog/dao/mysql"
 	"blog/models"
+	"blog/repository"
 )
 
 type HeartWordsServer interface {
@@ -13,32 +13,32 @@ type HeartWordsServer interface {
 	GetList(query models.HeartWordsQuery) (*models.HeartWordsListAndPage, error)
 }
 
-type HeartWordsImpl struct {
-	repo mysql.HeartWordsMysql
+type RepoHeartWordsService struct {
+	repo repository.HeartWordsRepo
 }
 
-func NewHeartWordsServer(repo mysql.HeartWordsMysql) HeartWordsServer {
-	return &HeartWordsImpl{
+func NewRepoHeartWordsService(repo repository.HeartWordsRepo) *RepoHeartWordsService {
+	return &RepoHeartWordsService{
 		repo: repo,
 	}
 }
 
-func (h *HeartWordsImpl) Create(data *models.HeartWordsData) error {
+func (h *RepoHeartWordsService) Create(data *models.HeartWordsData) error {
 	return h.repo.Create(data)
 }
 
-func (h *HeartWordsImpl) Read(id int) (data *models.HeartWordsData, err error) {
+func (h *RepoHeartWordsService) Read(id int) (data *models.HeartWordsData, err error) {
 	return h.repo.Read(id)
 }
 
-func (h *HeartWordsImpl) Update(data *models.HeartWordsData) error {
+func (h *RepoHeartWordsService) Update(data *models.HeartWordsData) error {
 	return h.repo.Update(data)
 }
 
-func (h *HeartWordsImpl) Delete(id int) error {
+func (h *RepoHeartWordsService) Delete(id int) error {
 	return h.repo.Delete(id)
 }
 
-func (h *HeartWordsImpl) GetList(query models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
+func (h *RepoHeartWordsService) GetList(query models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
 	return h.repo.GetList(query)
 }
