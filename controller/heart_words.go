@@ -3,7 +3,6 @@ package controller
 import (
 	"blog/models"
 	"blog/server"
-	"blog/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"strconv"
@@ -81,14 +80,11 @@ func (ctrl *HeartWordsController) Update(c *gin.Context) {
 
 func (ctrl *HeartWordsController) GetList(c *gin.Context) {
 	//	参数处理
-	page := utils.DisposePageQuery(c)
-	query := models.HeartWordsQuery{
-		Page:     page.Page,
-		PageSize: page.PageSize,
-	}
-	ifCouldType := c.Query("couldType")
-	if ifCouldType != "" {
-		query.IfCouldType = true
+	query := new(models.HeartWordsQuery)
+	if err := c.ShouldBindQuery(query); err != nil {
+		zap.L().Error("c.ShouldBindQuery(query) failed", zap.Error(err))
+		ResponseError(c, CodeParamInvalid)
+		return
 	}
 
 	list, err := ctrl.service.GetList(query)

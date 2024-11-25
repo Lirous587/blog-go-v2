@@ -10,7 +10,7 @@ type GalleryServer interface {
 	Read(id int) (*models.GalleryData, error)
 	Update(data *models.GalleryData) error
 	Delete(id int) error
-	GetList(query models.GalleryQuery) (*models.GalleryListAndPage, error)
+	GetList(query *models.GalleryQuery) (*models.GalleryListAndPage, error)
 }
 
 type RepoGalleryService struct {
@@ -39,6 +39,6 @@ func (s *RepoGalleryService) Delete(id int) error {
 	return s.repo.Delete(id)
 }
 
-func (s *RepoGalleryService) GetList(query models.GalleryQuery) (data *models.GalleryListAndPage, err error) {
+func (s *RepoGalleryService) GetList(query *models.GalleryQuery) (data *models.GalleryListAndPage, err error) {
 	return s.repo.GetList(query)
 }

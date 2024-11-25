@@ -3,7 +3,7 @@ package controller
 import (
 	"blog/models"
 	"blog/server"
-	"blog/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"strconv"
@@ -80,19 +80,14 @@ func (ctrl *GalleryController) Update(c *gin.Context) {
 }
 
 func (ctrl *GalleryController) GetList(c *gin.Context) {
-	//	参数处理
-	page := utils.DisposePageQuery(c)
-	query := models.GalleryQuery{
-		Page:     page.Page,
-		PageSize: page.PageSize,
-	}
+	// 1.获取参数
+	query := new(models.GalleryQuery)
 
-	kidSize64, _ := strconv.ParseInt(c.Query("k_id"), 10, 64)
-	if kidSize64 == 0 {
+	fmt.Println(query)
+	if err := c.ShouldBindQuery(&query); err != nil {
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
-	query.KindID = int(kidSize64)
 
 	list, err := ctrl.service.GetList(query)
 	if err != nil {

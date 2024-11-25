@@ -14,7 +14,7 @@ type GalleryRepo interface {
 	Read(id int) (*models.GalleryData, error)
 	Update(data *models.GalleryData) error
 	Delete(id int) error
-	GetList(query models.GalleryQuery) (*models.GalleryListAndPage, error)
+	GetList(query *models.GalleryQuery) (*models.GalleryListAndPage, error)
 	getList(data *models.GalleryListAndPage, whereClause string, args []interface{}) error
 	getCount(data *models.GalleryListAndPage, PageSize int, whereClause string, args []interface{}) error
 }
@@ -54,7 +54,7 @@ func (r *GalleryRepoMySQL) Delete(id int) error {
 	return err
 }
 
-func (r *GalleryRepoMySQL) GetList(query models.GalleryQuery) (data *models.GalleryListAndPage, err error) {
+func (r *GalleryRepoMySQL) GetList(query *models.GalleryQuery) (data *models.GalleryListAndPage, err error) {
 	data = new(models.GalleryListAndPage)
 	var wg sync.WaitGroup
 	taskCount := 2

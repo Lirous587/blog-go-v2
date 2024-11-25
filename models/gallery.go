@@ -8,9 +8,9 @@ type GalleryData struct {
 }
 
 type GalleryQuery struct {
-	Page     int
-	PageSize int
-	KindID   int `json:"kind_id" db:"kind_id"`
+	Page     int `query:"page" binding:"required"`
+	PageSize int `query:"page_size" binding:"required"`
+	KindID   int `query:"kind_id" binding:"required" db:"kind_id"`
 }
 
 type GalleryListAndPage struct {

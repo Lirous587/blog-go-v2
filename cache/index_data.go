@@ -3,6 +3,7 @@ package cache
 import (
 	"blog/dao/mysql"
 	"blog/models"
+	"blog/repository"
 	"fmt"
 	"go.uber.org/zap"
 	"sync"
@@ -18,6 +19,7 @@ func refreshData(data *models.IndexData) (err error) {
 	if err = mysql.GetKindList(kindList); err != nil {
 		return err
 	}
+
 	var labelList = new([]models.LabelData)
 	if err = mysql.GetLabelList(labelList); err != nil {
 		return err
@@ -28,16 +30,17 @@ func refreshData(data *models.IndexData) (err error) {
 		return err
 	}
 
-	//var heartWordsList = new([]models.HeartWordsData)
-	//if err = mysql.GetTypeHeartWords(heartWordsList); err != nil {
-	//	return err
-	//}
+	var heartWordsList *[]models.HeartWordsData
+	repo := repository.HeartWordsRepo(repository.NewHeartWordsRepoMySQL(mysql.DB))
+	if heartWordsList, err = repo.GetRecommendList(); err != nil {
+		return err
+	}
 	//整合数据
 	data.KindList = *kindList
 	data.LabelList = *labelList
 	data.EssayList = *essayList
-	//data.HeartWordsList = *heartWordsList
-	return nil
+	data.HeartWordsList = *heartWordsList
+	return
 }
 
 func InitIndexData() error {

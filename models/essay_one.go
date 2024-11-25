@@ -19,7 +19,7 @@ type EssayParams struct {
 	ID           int      `json:"id" db:"id"`
 	Name         string   `json:"name" binding:"required" db:"name"`
 	KindID       int      `json:"kind_id" binding:"required" db:"kind_id"`
-	LabelIds     []int    `json:"label-ids" bind:"required"`
+	LabelIds     []int    `json:"label_ids" bind:"required"`
 	Introduction string   `json:"introduction" binding:"required" db:"introduction"`
 	CreatedTime  string   `json:"created_time" db:"created_time"`
 	Content      string   `json:"content" binding:"required" db:"content"`

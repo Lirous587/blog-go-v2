@@ -9,9 +9,9 @@ type HeartWordsData struct {
 }
 
 type HeartWordsQuery struct {
-	Page        int
-	PageSize    int
-	IfCouldType bool
+	Page        int  `form:"page" binding:"required"`
+	PageSize    int  `form:"page_size" binding:"required"`
+	IfCouldType bool `form:"if_could_type" db:"if_could_type"`
 }
 
 type HeartWordsListAndPage struct {

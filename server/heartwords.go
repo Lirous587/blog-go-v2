@@ -10,7 +10,7 @@ type HeartWordsServer interface {
 	Read(id int) (*models.HeartWordsData, error)
 	Update(data *models.HeartWordsData) error
 	Delete(id int) error
-	GetList(query models.HeartWordsQuery) (*models.HeartWordsListAndPage, error)
+	GetList(query *models.HeartWordsQuery) (*models.HeartWordsListAndPage, error)
 }
 
 type RepoHeartWordsService struct {
@@ -39,6 +39,6 @@ func (h *RepoHeartWordsService) Delete(id int) error {
 	return h.repo.Delete(id)
 }
 
-func (h *RepoHeartWordsService) GetList(query models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
+func (h *RepoHeartWordsService) GetList(query *models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
 	return h.repo.GetList(query)
 }

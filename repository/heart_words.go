@@ -13,7 +13,8 @@ type HeartWordsRepo interface {
 	Read(id int) (*models.HeartWordsData, error)
 	Update(data *models.HeartWordsData) error
 	Delete(id int) error
-	GetList(query models.HeartWordsQuery) (*models.HeartWordsListAndPage, error)
+	GetList(query *models.HeartWordsQuery) (*models.HeartWordsListAndPage, error)
+	GetRecommendList() (*[]models.HeartWordsData, error)
 }
 
 type HeartWordsRepoMySQL struct {
@@ -50,7 +51,7 @@ func (r *HeartWordsRepoMySQL) Delete(id int) error {
 	return err
 }
 
-func (r *HeartWordsRepoMySQL) GetList(query models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
+func (r *HeartWordsRepoMySQL) GetList(query *models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
 	data = new(models.HeartWordsListAndPage)
 	var wg sync.WaitGroup
 	taskCount := 2
@@ -100,6 +101,16 @@ func (r *HeartWordsRepoMySQL) GetList(query models.HeartWordsQuery) (data *model
 	}
 
 	return data, nil
+}
+
+func (r *HeartWordsRepoMySQL) GetRecommendList() (data *[]models.HeartWordsData, err error) {
+	data = new([]models.HeartWordsData)
+	sqlStr :=
+		`SELECT h.id, h.content, h.source, h.img_id, h.if_could_type, g.img_url FROM heart_words h 
+			LEFT JOIN blog.gallery g ON h.img_id = g.id
+			WHERE h.if_could_type = 1`
+	err = r.db.Select(data, sqlStr)
+	return
 }
 
 func (r *HeartWordsRepoMySQL) getList(data *models.HeartWordsListAndPage, whereClause string, args []interface{}) error {
