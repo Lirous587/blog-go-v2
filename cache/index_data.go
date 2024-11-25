@@ -15,8 +15,10 @@ var (
 )
 
 func refreshData(data *models.IndexData) (err error) {
-	var kindList = new([]models.KindData)
-	if err = mysql.GetKindList(kindList); err != nil {
+	var kindList = new([]models.EssayKindData)
+	ekRepo := repository.EssayKindRepo(repository.NewEssayKindRepoMySQL(mysql.DB))
+	kindList, err = ekRepo.GetList()
+	if err != nil {
 		return err
 	}
 
@@ -31,8 +33,8 @@ func refreshData(data *models.IndexData) (err error) {
 	}
 
 	var heartWordsList *[]models.HeartWordsData
-	repo := repository.HeartWordsRepo(repository.NewHeartWordsRepoMySQL(mysql.DB))
-	if heartWordsList, err = repo.GetRecommendList(); err != nil {
+	hwRepo := repository.HeartWordsRepo(repository.NewHeartWordsRepoMySQL(mysql.DB))
+	if heartWordsList, err = hwRepo.GetRecommendList(); err != nil {
 		return err
 	}
 	//整合数据

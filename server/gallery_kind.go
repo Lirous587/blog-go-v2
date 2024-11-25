@@ -13,32 +13,32 @@ type GalleryKindServer interface {
 	GetList() (*models.GalleryKindList, error)
 }
 
-type RepoGalleryKindServer struct {
+type GalleryKindRepoService struct {
 	repo repository.GalleryKindRepo
 }
 
-func NewRepoGalleryKindServer(repo repository.GalleryKindRepo) *RepoGalleryKindServer {
-	return &RepoGalleryKindServer{
+func NewGalleryKindRepoService(repo repository.GalleryKindRepo) *GalleryKindRepoService {
+	return &GalleryKindRepoService{
 		repo: repo,
 	}
 }
 
-func (h *RepoGalleryKindServer) Create(data *models.GalleryKindData) error {
+func (h *GalleryKindRepoService) Create(data *models.GalleryKindData) error {
 	return h.repo.Create(data)
 }
 
-func (h *RepoGalleryKindServer) Read(id int) (data *models.GalleryKindData, err error) {
+func (h *GalleryKindRepoService) Read(id int) (data *models.GalleryKindData, err error) {
 	return h.repo.Read(id)
 }
 
-func (h *RepoGalleryKindServer) Update(data *models.GalleryKindData) error {
+func (h *GalleryKindRepoService) Update(data *models.GalleryKindData) error {
 	return h.repo.Update(data)
 }
 
-func (h *RepoGalleryKindServer) Delete(id int) error {
+func (h *GalleryKindRepoService) Delete(id int) error {
 	return h.repo.Delete(id)
 }
 
-func (h *RepoGalleryKindServer) GetList() (data *models.GalleryKindList, err error) {
+func (h *GalleryKindRepoService) GetList() (data *models.GalleryKindList, err error) {
 	return h.repo.GetList()
 }

@@ -9,12 +9,12 @@ import (
 )
 
 type HeartWordsController struct {
-	service server.HeartWordsServer
+	server server.HeartWordsServer
 }
 
-func NewHeartWordsController(service server.HeartWordsServer) *HeartWordsController {
+func NewHeartWordsController(server server.HeartWordsServer) *HeartWordsController {
 	return &HeartWordsController{
-		service: service,
+		server: server,
 	}
 }
 
@@ -28,7 +28,7 @@ func (ctrl *HeartWordsController) Create(c *gin.Context) {
 	}
 
 	// 2.逻辑处理
-	if err := ctrl.service.Create(data); err != nil {
+	if err := ctrl.server.Create(data); err != nil {
 		zap.L().Error("ctrl.service.Create(data) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
@@ -48,7 +48,7 @@ func (ctrl *HeartWordsController) Delete(c *gin.Context) {
 	}
 
 	// 2.逻辑处理
-	if err := ctrl.service.Delete(id); err != nil {
+	if err := ctrl.server.Delete(id); err != nil {
 		zap.L().Error("ctrl.service.Delete(id) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
@@ -68,7 +68,7 @@ func (ctrl *HeartWordsController) Update(c *gin.Context) {
 	}
 
 	// 2.逻辑处理
-	if err := ctrl.service.Update(data); err != nil {
+	if err := ctrl.server.Update(data); err != nil {
 		zap.L().Error("ctrl.service.Update(data) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
@@ -87,7 +87,7 @@ func (ctrl *HeartWordsController) GetList(c *gin.Context) {
 		return
 	}
 
-	list, err := ctrl.service.GetList(query)
+	list, err := ctrl.server.GetList(query)
 	if err != nil {
 		zap.L().Error("ctrl.service.GetList(query) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)

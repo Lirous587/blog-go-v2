@@ -30,6 +30,7 @@ func SetupRouter(mode string) *gin.Engine {
 	heartWordsCtl := InitHeartWordsController()
 	galleryCtl := InitGalleryController()
 	galleryKindCtl := InitGalleryKindController()
+	essayKindCtrl := InitEssayKindController()
 
 	v0 := r.Group("/api/base")
 	v0.Use(middlewares.SaveUserIp())
@@ -53,7 +54,7 @@ func SetupRouter(mode string) *gin.Engine {
 	}
 
 	v3Cache := r.Group("/api/admin")
-	//v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateDataMiddleware())
+	v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateDataMiddleware())
 	{
 		// essay
 		v3Cache.POST("/essay", controller.CreateEssayHandler)
@@ -66,9 +67,9 @@ func SetupRouter(mode string) *gin.Engine {
 		v3Cache.PUT("/label", controller.UpdateLabelHandler)
 
 		// kind
-		v3Cache.POST("/kind", controller.CreateKindHandler)
-		v3Cache.DELETE("/kind", controller.DeleteKindHandler)
-		v3Cache.PUT("/kind", controller.UpdateKindHandler)
+		v3Cache.POST("/kind", essayKindCtrl.Create)
+		v3Cache.DELETE("/kind", essayKindCtrl.Delete)
+		v3Cache.PUT("/kind", essayKindCtrl.Update)
 	}
 
 	v3NoCache := r.Group("/api/admin")
@@ -77,7 +78,7 @@ func SetupRouter(mode string) *gin.Engine {
 		// 上传图片
 		v3NoCache.POST("/uploadImg", controller.UploadImgHandler)
 		// 主页数据
-		//v3NoCache.GET("/panel", controller.ResponseDataAboutManagerPanel)
+		v3NoCache.GET("/panel", controller.ResponseDataAboutManagerPanel)
 
 		//heartWord
 		v3Cache.POST("/heartWords", heartWordsCtl.Create)
