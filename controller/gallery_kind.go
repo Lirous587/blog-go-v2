@@ -2,19 +2,19 @@ package controller
 
 import (
 	"blog/models"
-	"blog/server"
+	"blog/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"strconv"
 )
 
 type GalleryKindController struct {
-	server server.GalleryKindServer
+	service service.GalleryKindService
 }
 
-func NewGalleryKindController(server server.GalleryKindServer) *GalleryKindController {
+func NewGalleryKindController(service service.GalleryKindService) *GalleryKindController {
 	return &GalleryKindController{
-		server: server,
+		service: service,
 	}
 }
 
@@ -28,7 +28,7 @@ func (ctrl *GalleryKindController) Create(c *gin.Context) {
 	}
 
 	// 2.逻辑处理
-	if err := ctrl.server.Create(data); err != nil {
+	if err := ctrl.service.Create(data); err != nil {
 		zap.L().Error("ctrl.service.Create(data) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
@@ -48,7 +48,7 @@ func (ctrl *GalleryKindController) Delete(c *gin.Context) {
 	}
 
 	// 2.逻辑处理
-	if err := ctrl.server.Delete(id); err != nil {
+	if err := ctrl.service.Delete(id); err != nil {
 		zap.L().Error("ctrl.service.Delete(id) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
@@ -68,7 +68,7 @@ func (ctrl *GalleryKindController) Update(c *gin.Context) {
 	}
 
 	// 2.逻辑处理
-	if err := ctrl.server.Update(data); err != nil {
+	if err := ctrl.service.Update(data); err != nil {
 		zap.L().Error("ctrl.service.Update(data) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
@@ -79,7 +79,7 @@ func (ctrl *GalleryKindController) Update(c *gin.Context) {
 }
 
 func (ctrl *GalleryKindController) GetList(c *gin.Context) {
-	list, err := ctrl.server.GetList()
+	list, err := ctrl.service.GetList()
 	if err != nil {
 		zap.L().Error("ctrl.service.GetList() failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)

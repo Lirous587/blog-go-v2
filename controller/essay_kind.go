@@ -2,19 +2,19 @@ package controller
 
 import (
 	"blog/models"
-	"blog/server"
+	"blog/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"strconv"
 )
 
 type EssayKindController struct {
-	server server.EssayKindServer
+	service service.EssayKindService
 }
 
-func NewEssayKindController(server server.EssayKindServer) *EssayKindController {
+func NewEssayKindController(service service.EssayKindService) *EssayKindController {
 	return &EssayKindController{
-		server: server,
+		service: service,
 	}
 }
 
@@ -27,8 +27,8 @@ func (ctrl *EssayKindController) Create(c *gin.Context) {
 		return
 	}
 	// 2.逻辑处理
-	if err := ctrl.server.Create(data); err != nil {
-		zap.L().Error("ctrl.server.Create(data) failed,err:", zap.Error(err))
+	if err := ctrl.service.Create(data); err != nil {
+		zap.L().Error("ctrl.service.Create(data) failed,err:", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}
@@ -44,8 +44,8 @@ func (ctrl *EssayKindController) Update(c *gin.Context) {
 		return
 	}
 	//2.逻辑处理
-	if err := ctrl.server.Update(data); err != nil {
-		zap.L().Error("logic.UpdateKind(p) failed,err:", zap.Error(err))
+	if err := ctrl.service.Update(data); err != nil {
+		zap.L().Error("ctrl.service.Update(data) failed,err:", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}
@@ -63,8 +63,8 @@ func (ctrl *EssayKindController) Delete(c *gin.Context) {
 		return
 	}
 	//2.逻辑处理
-	if err = ctrl.server.Delete(id); err != nil {
-		zap.L().Error("logic.DeleteKind(id) failed,err:", zap.Error(err))
+	if err = ctrl.service.Delete(id); err != nil {
+		zap.L().Error("ctrl.service.Delete(id) failed,err:", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}

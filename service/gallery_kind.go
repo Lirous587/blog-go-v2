@@ -1,11 +1,11 @@
-package server
+package service
 
 import (
 	"blog/models"
 	"blog/repository"
 )
 
-type GalleryKindServer interface {
+type GalleryKindService interface {
 	Create(data *models.GalleryKindData) error
 	Read(id int) (*models.GalleryKindData, error)
 	Update(data *models.GalleryKindData) error

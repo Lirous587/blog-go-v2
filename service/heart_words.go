@@ -1,11 +1,11 @@
-package server
+package service
 
 import (
 	"blog/models"
 	"blog/repository"
 )
 
-type HeartWordsServer interface {
+type HeartWordsService interface {
 	Create(data *models.HeartWordsData) error
 	Read(id int) (*models.HeartWordsData, error)
 	Update(data *models.HeartWordsData) error

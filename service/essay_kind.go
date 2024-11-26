@@ -1,11 +1,11 @@
-package server
+package service
 
 import (
 	"blog/models"
 	"blog/repository"
 )
 
-type EssayKindServer interface {
+type EssayKindService interface {
 	Create(data *models.EssayKindData) error
 	Delete(id int) error
 	Update(data *models.EssayKindData) error
