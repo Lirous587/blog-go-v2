@@ -31,6 +31,7 @@ func SetupRouter(mode string) *gin.Engine {
 	galleryCtl := InitGalleryController()
 	galleryKindCtl := InitGalleryKindController()
 	essayKindCtrl := InitEssayKindController()
+	essayLabelCtrl := InitEssayLabelController()
 
 	v0 := r.Group("/api/base")
 	v0.Use(middlewares.SaveUserIp())
@@ -62,9 +63,9 @@ func SetupRouter(mode string) *gin.Engine {
 		v3Cache.PUT("/essay", controller.UpdateEssayHandler)
 
 		// label
-		v3Cache.POST("/label", controller.CreateLabelHandler)
-		v3Cache.DELETE("label", controller.DeleteLabelHandler)
-		v3Cache.PUT("/label", controller.UpdateLabelHandler)
+		v3Cache.POST("/label", essayLabelCtrl.Create)
+		v3Cache.DELETE("label", essayLabelCtrl.Delete)
+		v3Cache.PUT("/label", essayLabelCtrl.Update)
 
 		// kind
 		v3Cache.POST("/kind", essayKindCtrl.Create)

@@ -22,8 +22,10 @@ func refreshData(data *models.IndexData) (err error) {
 		return err
 	}
 
-	var labelList = new([]models.LabelData)
-	if err = mysql.GetLabelList(labelList); err != nil {
+	var labelList = new([]models.EssayLabelData)
+	elRepo := repository.EssayLabelRepo(repository.NewEssayLabelRepoMySQL(mysql.DB))
+	labelList, err = elRepo.GetList()
+	if err != nil {
 		return err
 	}
 

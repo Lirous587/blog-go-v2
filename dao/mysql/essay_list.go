@@ -120,11 +120,11 @@ func getEssayList(data *models.EssayListAndPage, whereClause string, args []inte
 			ids := strings.Split(raw.LabelIDs, ",")
 			names := strings.Split(raw.LabelNames, ",")
 			introduction := strings.Split(raw.LabelIntroduction, ",")
-			data.EssayList[i].LabelList = make([]models.LabelData, len(ids))
+			data.EssayList[i].LabelList = make([]models.EssayLabelData, len(ids))
 
 			for j := range ids {
 				id, _ := strconv.Atoi(ids[j])
-				data.EssayList[i].LabelList[j] = models.LabelData{
+				data.EssayList[i].LabelList[j] = models.EssayLabelData{
 					ID:           id,
 					Name:         names[j],
 					Introduction: introduction[j],
@@ -178,10 +178,10 @@ func GetAllEssay(data *[]models.EssayData) error {
 		if raw.LabelNames != "" && raw.LabelIDs != "" {
 			ids := strings.Split(raw.LabelIDs, ",")
 			names := strings.Split(raw.LabelNames, ",")
-			(*data)[i].LabelList = make([]models.LabelData, len(ids))
+			(*data)[i].LabelList = make([]models.EssayLabelData, len(ids))
 			for j := range ids {
 				id, _ := strconv.Atoi(ids[j])
-				(*data)[i].LabelList[j] = models.LabelData{
+				(*data)[i].LabelList[j] = models.EssayLabelData{
 					ID:   id,
 					Name: names[j],
 				}

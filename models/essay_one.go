@@ -1,17 +1,17 @@
 package models
 
 type EssayContent struct {
-	Name          string      `json:"name" db:"name"`
-	KindID        int         `json:"kind_id,omitempty" db:"kind_id"`
-	KindName      string      `json:"kind_name" db:"kind_name"`
-	LabelList     []LabelData `json:"label_list"`
-	Id            int         `json:"id" db:"id"`
-	Introduction  string      `json:"introduction" db:"introduction"`
-	Content       string      `json:"content" db:"content"`
-	VisitedTimes  int64       `json:"visited_times" db:"visited_times"`
-	CreatedTime   string      `json:"created_time" db:"created_time"`
-	Keywords      []string    `json:"keywords,omitempty"`
-	NearEssayList []EssayData `json:"near_essay_list,omitempty"`
+	Name          string           `json:"name" db:"name"`
+	KindID        int              `json:"kind_id,omitempty" db:"kind_id"`
+	KindName      string           `json:"kind_name" db:"kind_name"`
+	LabelList     []EssayLabelData `json:"label_list"`
+	Id            int              `json:"id" db:"id"`
+	Introduction  string           `json:"introduction" db:"introduction"`
+	Content       string           `json:"content" db:"content"`
+	VisitedTimes  int64            `json:"visited_times" db:"visited_times"`
+	CreatedTime   string           `json:"created_time" db:"created_time"`
+	Keywords      []string         `json:"keywords,omitempty"`
+	NearEssayList []EssayData      `json:"near_essay_list,omitempty"`
 	Img           `json:"img" binding:"required"`
 }
 

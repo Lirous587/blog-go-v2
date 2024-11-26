@@ -77,7 +77,7 @@ func getEssayContent(data *models.EssayContent) error {
 	return db.Get(data, sqlStr, data.Id)
 }
 
-func getEssayLabelList(data *[]models.LabelData, eid int) error {
+func getEssayLabelList(data *[]models.EssayLabelData, eid int) error {
 	sqlStr := `
 		SELECT el.label_id AS id ,l.name as name
 		FROM essay_label el

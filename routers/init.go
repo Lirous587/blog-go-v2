@@ -46,3 +46,13 @@ func InitEssayKindController() *controller.EssayKindController {
 	// 初始化控制器
 	return controller.NewEssayKindController(ser)
 }
+
+func InitEssayLabelController() *controller.EssayLabelCtrl {
+	// 初始化仓库和服务
+	var repo repository.EssayLabelRepo
+	repo = repository.NewEssayLabelRepoMySQL(mysql.DB)
+	var ser service.EssayLabelService
+	ser = service.NewEssayLabelRepoService(repo)
+	// 初始化控制器
+	return controller.NewEssayLabelController(ser)
+}
