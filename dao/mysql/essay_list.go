@@ -94,9 +94,9 @@ func getEssayList(data *models.EssayListAndPage, whereClause string, args []inte
         COALESCE(GROUP_CONCAT(l.introduction), '') AS label_introduction
     FROM essay e
     LEFT JOIN gallery g on g.id = e.img_id
-    LEFT JOIN kind k ON e.kind_id = k.id
-    LEFT JOIN essay_label el ON e.id = el.essay_id
-    LEFT JOIN label l ON l.id = el.label_id  
+    LEFT JOIN e_kind k ON e.kind_id = k.id
+    LEFT JOIN eid_lid el ON e.id = el.essay_id
+    LEFT JOIN e_label l ON l.id = el.label_id  
 	`
 
 	groupBy := "GROUP BY e.id,g.img_url"
@@ -139,8 +139,8 @@ func getEssayCount(data *models.EssayListAndPage, PageSize int, whereClause stri
 	baseSql := `
         SELECT COUNT(DISTINCT e.id)
         FROM essay e 
-        LEFT JOIN kind k ON e.kind_id = k.id
-        LEFT JOIN essay_label el ON e.id = el.essay_id
+        LEFT JOIN e_kind k ON e.kind_id = k.id
+        LEFT JOIN eid_lid el ON e.id = el.essay_id
    	`
 
 	var totalCount int
@@ -160,9 +160,9 @@ func GetAllEssay(data *[]models.EssayData) error {
 		    COALESCE(GROUP_CONCAT(el.label_id), '') AS label_ids,
             COALESCE(GROUP_CONCAT(l.name), '') AS label_names
 		FROM essay e
-		LEFT JOIN kind k ON e.kind_id = k.id
-		LEFT JOIN essay_label el ON e.id = el.essay_id
-		LEFT JOIN label l ON l.id = el.label_id
+		LEFT JOIN e_kind k ON e.kind_id = k.id
+		LEFT JOIN eid_lid el ON e.id = el.essay_id
+		LEFT JOIN e_label l ON l.id = el.label_id
 		LEFT JOIN blog.gallery g on g.id = e.img_id	
 		GROUP BY e.id,g.img_url
 		ORDER BY e.id DESC

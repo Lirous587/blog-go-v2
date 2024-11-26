@@ -24,7 +24,7 @@ func NewEssayLabelRepoMySQL(db *sqlx.DB) *EssayLabelRepoMySQL {
 }
 
 func (r *EssayLabelRepoMySQL) Create(data *models.EssayLabelData) error {
-	sqlStr := `INSERT INTO label (name,introduction) VALUES(:name,:introduction)`
+	sqlStr := `INSERT INTO e_label (name,introduction) VALUES(:name,:introduction)`
 	_, err := r.db.NamedExec(sqlStr, data)
 	if err != nil {
 		return err
@@ -33,7 +33,7 @@ func (r *EssayLabelRepoMySQL) Create(data *models.EssayLabelData) error {
 }
 
 func (r *EssayLabelRepoMySQL) Update(data *models.EssayLabelData) error {
-	sqlStr := `UPDATE label SET name = :name,introduction=:introduction WHERE id = :id`
+	sqlStr := `UPDATE e_label SET name = :name,introduction=:introduction WHERE id = :id`
 	_, err := r.db.NamedExec(sqlStr, data)
 	if err != nil {
 		return fmt.Errorf("update label failed,err:%w", err)
@@ -55,13 +55,13 @@ func (r *EssayLabelRepoMySQL) Delete(id int) error {
 
 func deleteLabelInLabel(tx *sqlx.Tx, id int) error {
 	// 删除label
-	sqlStr := `DELETE FROM label WHERE id = ?`
+	sqlStr := `DELETE FROM e_label WHERE id = ?`
 	_, err := tx.Exec(sqlStr, id)
 	return err
 }
 
 func deleteLabelInEssayLabel(tx *sqlx.Tx, id int) error {
-	sqlStr := `DELETE FROM essay_label WHERE label_id = ?`
+	sqlStr := `DELETE FROM eid_lid WHERE label_id = ?`
 	_, err := tx.Exec(sqlStr, id)
 	return err
 }
@@ -72,8 +72,8 @@ func (r *EssayLabelRepoMySQL) GetList() (data *[]models.EssayLabelData, err erro
 	sqlStr := `
 		SELECT l.name,l.id,l.introduction,
 		    COUNT(el.essay_id) AS essay_count 
-			FROM label l
-			LEFT JOIN essay_label el on l.id = el.label_id
+			FROM e_label l
+			LEFT JOIN eid_lid el on l.id = el.label_id
 			GROUP BY l.id
 			`
 	err = r.db.Select(data, sqlStr)
