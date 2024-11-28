@@ -1,16 +1,27 @@
 package models
 
 type GalleryData struct {
-	ID       int    `json:"id" db:"id"`
 	ImgUrl   string `json:"img_url" binding:"required" db:"img_url"`
-	KindName string `json:"kind_name" binding:"required" db:"name"`
+	KindName string `json:"kind_name" db:"name"`
+	ID       int    `json:"id" db:"id"`
 	KindID   int    `json:"kind_id" binding:"required" db:"kind_id"`
 }
 
+type GalleryParams struct {
+	ImgUrl string `json:"img_url" binding:"required" db:"img_url"`
+	KindID int    `json:"kind_id" binding:"required" db:"kind_id"`
+}
+
+type GalleryUpdateParams struct {
+	ImgUrl string `json:"img_url" binding:"required" db:"img_url"`
+	ID     int    `json:"id" binding:"required" db:"id"`
+	KindID int    `json:"kind_id" binding:"required" db:"kind_id"`
+}
+
 type GalleryQuery struct {
-	Page     int `query:"page" binding:"required"`
-	PageSize int `query:"page_size" binding:"required"`
-	KindID   int `query:"kind_id" binding:"required" db:"kind_id"`
+	Page     int `query:"page" form:"page"`
+	PageSize int `query:"page_size" form:"page_size"`
+	KindID   int `query:"kind_id" form:"kind_id" binding:"required" db:"kind_id"`
 }
 
 type GalleryListAndPage struct {

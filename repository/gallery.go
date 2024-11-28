@@ -10,9 +10,9 @@ import (
 )
 
 type GalleryRepo interface {
-	Create(data *models.GalleryData) error
+	Create(data *models.GalleryParams) error
 	Read(id int) (*models.GalleryData, error)
-	Update(data *models.GalleryData) error
+	Update(data *models.GalleryUpdateParams) error
 	Delete(id int) error
 	GetList(query *models.GalleryQuery) (*models.GalleryListAndPage, error)
 	getList(data *models.GalleryListAndPage, whereClause string, args []interface{}) error
@@ -29,7 +29,7 @@ func NewGalleryRepoMySQL(db *sqlx.DB) *GalleryRepoMySQL {
 	}
 }
 
-func (r *GalleryRepoMySQL) Create(data *models.GalleryData) error {
+func (r *GalleryRepoMySQL) Create(data *models.GalleryParams) error {
 	data.ImgUrl = utils.SanitizedFileName(data.ImgUrl)
 	sqlStr := `INSERT INTO gallery(img_url, kind_id) VALUES (:img_url,:kind_id)`
 	_, err := r.db.NamedExec(sqlStr, data)
@@ -42,7 +42,7 @@ func (r *GalleryRepoMySQL) Read(id int) (data *models.GalleryData, err error) {
 	return data, err
 }
 
-func (r *GalleryRepoMySQL) Update(data *models.GalleryData) error {
+func (r *GalleryRepoMySQL) Update(data *models.GalleryUpdateParams) error {
 	sqlStr := `UPDATE gallery SET img_url = :img_url,kind_id = :kind_id WHERE id = :id`
 	_, err := r.db.NamedExec(sqlStr, data)
 	return err

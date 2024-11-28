@@ -3,7 +3,6 @@ package controller
 import (
 	"blog/models"
 	"blog/service"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"strconv"
@@ -20,7 +19,7 @@ func NewGalleryCtrl(service service.GalleryService) *GalleryCtrl {
 }
 
 func (ctrl *GalleryCtrl) Create(c *gin.Context) {
-	data := new(models.GalleryData)
+	data := new(models.GalleryParams)
 	// 1.参数绑定
 	if err := c.ShouldBindJSON(data); err != nil {
 		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
@@ -60,7 +59,7 @@ func (ctrl *GalleryCtrl) Delete(c *gin.Context) {
 }
 
 func (ctrl *GalleryCtrl) Update(c *gin.Context) {
-	data := new(models.GalleryData)
+	data := new(models.GalleryUpdateParams)
 	// 1.参数检验
 	if err := c.ShouldBindJSON(data); err != nil {
 		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
@@ -82,8 +81,11 @@ func (ctrl *GalleryCtrl) Update(c *gin.Context) {
 func (ctrl *GalleryCtrl) GetList(c *gin.Context) {
 	// 1.获取参数
 	query := new(models.GalleryQuery)
+	if query.PageSize <= 0 || query.Page <= 0 {
+		query.PageSize = 5
+		query.Page = 1
+	}
 
-	fmt.Println(query)
 	if err := c.ShouldBindQuery(&query); err != nil {
 		ResponseError(c, CodeParamInvalid)
 		return

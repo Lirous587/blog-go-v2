@@ -6,9 +6,9 @@ import (
 )
 
 type GalleryService interface {
-	Create(data *models.GalleryData) error
+	Create(data *models.GalleryParams) error
 	Read(id int) (*models.GalleryData, error)
-	Update(data *models.GalleryData) error
+	Update(data *models.GalleryUpdateParams) error
 	Delete(id int) error
 	GetList(query *models.GalleryQuery) (*models.GalleryListAndPage, error)
 }
@@ -23,7 +23,7 @@ func NewGalleryRepoService(repo repository.GalleryRepo) *GalleryRepoService {
 	}
 }
 
-func (s *GalleryRepoService) Create(data *models.GalleryData) error {
+func (s *GalleryRepoService) Create(data *models.GalleryParams) error {
 	return s.repo.Create(data)
 }
 
@@ -31,7 +31,7 @@ func (s *GalleryRepoService) Read(id int) (data *models.GalleryData, err error) 
 	return s.repo.Read(id)
 }
 
-func (s *GalleryRepoService) Update(data *models.GalleryData) error {
+func (s *GalleryRepoService) Update(data *models.GalleryUpdateParams) error {
 	return s.repo.Update(data)
 }
 
