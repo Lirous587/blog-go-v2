@@ -6,8 +6,8 @@ import (
 )
 
 type EssayLabelService interface {
-	Create(data *models.EssayLabelData) error
-	Update(data *models.EssayLabelData) error
+	Create(data *models.EssayLabelParam) error
+	Update(data *models.EssayLabelUpdateParam) error
 	Delete(id int) error
 }
 
@@ -21,7 +21,7 @@ func NewEssayLabelRepoService(repo repository.EssayLabelRepo) *EssayLabelRepoSer
 	}
 }
 
-func (s *EssayLabelRepoService) Create(data *models.EssayLabelData) (err error) {
+func (s *EssayLabelRepoService) Create(data *models.EssayLabelParam) (err error) {
 	return s.repo.Create(data)
 }
 
@@ -29,6 +29,6 @@ func (s *EssayLabelRepoService) Delete(id int) (err error) {
 	return s.repo.Delete(id)
 }
 
-func (s *EssayLabelRepoService) Update(data *models.EssayLabelData) (err error) {
+func (s *EssayLabelRepoService) Update(data *models.EssayLabelUpdateParam) (err error) {
 	return s.repo.Update(data)
 }

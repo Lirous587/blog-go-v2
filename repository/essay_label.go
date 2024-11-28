@@ -7,8 +7,8 @@ import (
 )
 
 type EssayLabelRepo interface {
-	Create(data *models.EssayLabelData) error
-	Update(data *models.EssayLabelData) error
+	Create(data *models.EssayLabelParam) error
+	Update(data *models.EssayLabelUpdateParam) error
 	Delete(id int) error
 	GetList() (*[]models.EssayLabelData, error)
 }
@@ -23,7 +23,7 @@ func NewEssayLabelRepoMySQL(db *sqlx.DB) *EssayLabelRepoMySQL {
 	}
 }
 
-func (r *EssayLabelRepoMySQL) Create(data *models.EssayLabelData) error {
+func (r *EssayLabelRepoMySQL) Create(data *models.EssayLabelParam) error {
 	sqlStr := `INSERT INTO e_label (name,introduction) VALUES(:name,:introduction)`
 	_, err := r.db.NamedExec(sqlStr, data)
 	if err != nil {
@@ -32,7 +32,7 @@ func (r *EssayLabelRepoMySQL) Create(data *models.EssayLabelData) error {
 	return err
 }
 
-func (r *EssayLabelRepoMySQL) Update(data *models.EssayLabelData) error {
+func (r *EssayLabelRepoMySQL) Update(data *models.EssayLabelUpdateParam) error {
 	sqlStr := `UPDATE e_label SET name = :name,introduction=:introduction WHERE id = :id`
 	_, err := r.db.NamedExec(sqlStr, data)
 	if err != nil {

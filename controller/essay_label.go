@@ -20,7 +20,7 @@ func NewEssayLabelCtrl(service service.EssayLabelService) *EssayLabelCtrl {
 
 func (ctrl *EssayLabelCtrl) Create(c *gin.Context) {
 	//1.参数处理
-	var data = new(models.EssayLabelData)
+	var data = new(models.EssayLabelParam)
 	if err := c.ShouldBindJSON(data); err != nil {
 		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
@@ -58,7 +58,7 @@ func (ctrl *EssayLabelCtrl) Delete(c *gin.Context) {
 
 func (ctrl *EssayLabelCtrl) Update(c *gin.Context) {
 	//1.参数处理
-	var data = new(models.EssayLabelData)
+	var data = new(models.EssayLabelUpdateParam)
 	if err := c.ShouldBindJSON(data); err != nil {
 		zap.L().Error("c.ShouldBindJSON(data) failed,err:", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
