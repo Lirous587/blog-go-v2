@@ -30,7 +30,8 @@ func refreshData(data *models.IndexData) (err error) {
 	}
 
 	var essayList = new([]models.EssayData)
-	if err = mysql.GetRecommendEssayList(essayList); err != nil {
+	repo := repository.EssayRepo(repository.NewEssayRepoMySQL(mysql.DB))
+	if essayList, err = repo.GetRecommendList(); err != nil {
 		return err
 	}
 

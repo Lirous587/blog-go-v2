@@ -8,17 +8,17 @@ import (
 	"strconv"
 )
 
-type EssayKindController struct {
+type EssayKindCtrl struct {
 	service service.EssayKindService
 }
 
-func NewEssayKindController(service service.EssayKindService) *EssayKindController {
-	return &EssayKindController{
+func NewEssayKindCtrl(service service.EssayKindService) *EssayKindCtrl {
+	return &EssayKindCtrl{
 		service: service,
 	}
 }
 
-func (ctrl *EssayKindController) Create(c *gin.Context) {
+func (ctrl *EssayKindCtrl) Create(c *gin.Context) {
 	data := new(models.EssayKindData)
 	// 1.参数绑定
 	if err := c.ShouldBindJSON(data); err != nil {
@@ -35,7 +35,7 @@ func (ctrl *EssayKindController) Create(c *gin.Context) {
 	ResponseSuccess(c, createSuccess)
 }
 
-func (ctrl *EssayKindController) Update(c *gin.Context) {
+func (ctrl *EssayKindCtrl) Update(c *gin.Context) {
 	//1.参数检验
 	var data = new(models.EssayKindData)
 	if err := c.ShouldBindJSON(data); err != nil {
@@ -53,7 +53,7 @@ func (ctrl *EssayKindController) Update(c *gin.Context) {
 	ResponseSuccess(c, updateSuccess)
 }
 
-func (ctrl *EssayKindController) Delete(c *gin.Context) {
+func (ctrl *EssayKindCtrl) Delete(c *gin.Context) {
 	//1.获取参数
 	qid := c.Query("id")
 	id, err := strconv.Atoi(qid)

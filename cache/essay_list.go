@@ -4,6 +4,7 @@ import (
 	"blog/dao/mysql"
 	"blog/dao/redis"
 	"blog/models"
+	"blog/repository"
 	"fmt"
 	"go.uber.org/zap"
 	"sync"
@@ -17,7 +18,9 @@ var (
 func GetEssayListInit() (*[]models.EssayData, error) {
 	rwLockForEssayList.Lock()
 	defer rwLockForEssayList.Unlock()
-	if err := mysql.GetAllEssay(globalDataAboutEssayList); err != nil {
+	repo := repository.EssayRepo(repository.NewEssayRepoMySQL(mysql.DB))
+	var err error
+	if globalDataAboutEssayList, err = repo.GetAll(); err != nil {
 		zap.L().Error("mysql.GetAllEssay(globalDataAboutEssayList) filed,err:", zap.Error(err))
 		return nil, err
 	}

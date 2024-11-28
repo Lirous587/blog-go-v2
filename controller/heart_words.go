@@ -8,17 +8,17 @@ import (
 	"strconv"
 )
 
-type HeartWordsController struct {
+type HeartWordsCtrl struct {
 	service service.HeartWordsService
 }
 
-func NewHeartWordsController(service service.HeartWordsService) *HeartWordsController {
-	return &HeartWordsController{
+func NewHeartWordsCtrl(service service.HeartWordsService) *HeartWordsCtrl {
+	return &HeartWordsCtrl{
 		service: service,
 	}
 }
 
-func (ctrl *HeartWordsController) Create(c *gin.Context) {
+func (ctrl *HeartWordsCtrl) Create(c *gin.Context) {
 	data := new(models.HeartWordsData)
 	// 1.参数绑定
 	if err := c.ShouldBindJSON(data); err != nil {
@@ -37,7 +37,7 @@ func (ctrl *HeartWordsController) Create(c *gin.Context) {
 	ResponseSuccess(c, createSuccess)
 }
 
-func (ctrl *HeartWordsController) Delete(c *gin.Context) {
+func (ctrl *HeartWordsCtrl) Delete(c *gin.Context) {
 	// 1.获取参数
 	qid := c.Query("id")
 	id, err := strconv.Atoi(qid)
@@ -58,7 +58,7 @@ func (ctrl *HeartWordsController) Delete(c *gin.Context) {
 	ResponseSuccess(c, deleteSuccess)
 }
 
-func (ctrl *HeartWordsController) Update(c *gin.Context) {
+func (ctrl *HeartWordsCtrl) Update(c *gin.Context) {
 	data := new(models.HeartWordsData)
 	// 1.参数检验
 	if err := c.ShouldBindJSON(data); err != nil {
@@ -78,7 +78,7 @@ func (ctrl *HeartWordsController) Update(c *gin.Context) {
 	ResponseSuccess(c, updateSuccess)
 }
 
-func (ctrl *HeartWordsController) GetList(c *gin.Context) {
+func (ctrl *HeartWordsCtrl) GetList(c *gin.Context) {
 	//	参数处理
 	query := new(models.HeartWordsQuery)
 	if err := c.ShouldBindQuery(query); err != nil {

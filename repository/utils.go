@@ -5,8 +5,8 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// sqlxWithTx 事务工具函数
-func sqlxWithTx(db *sqlx.DB, fn func(*sqlx.Tx) error) error {
+// newSqlxTx 事务工具函数
+func newSqlxTx(db *sqlx.DB, fn func(*sqlx.Tx) error) error {
 	tx, err := db.Beginx()
 	if err != nil {
 		return fmt.Errorf("begin transaction: %w", err)

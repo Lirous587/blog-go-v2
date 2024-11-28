@@ -42,7 +42,7 @@ func (r *EssayLabelRepoMySQL) Update(data *models.EssayLabelData) error {
 }
 
 func (r *EssayLabelRepoMySQL) Delete(id int) error {
-	return sqlxWithTx(r.db, func(tx *sqlx.Tx) error {
+	return newSqlxTx(r.db, func(tx *sqlx.Tx) error {
 		if err := deleteLabelInEssayLabel(tx, id); err != nil {
 			return fmt.Errorf("deleteLabelFromEssayLabel failed,err:%w", err)
 		}

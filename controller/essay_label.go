@@ -12,7 +12,7 @@ type EssayLabelCtrl struct {
 	service service.EssayLabelService
 }
 
-func NewEssayLabelController(service service.EssayLabelService) *EssayLabelCtrl {
+func NewEssayLabelCtrl(service service.EssayLabelService) *EssayLabelCtrl {
 	return &EssayLabelCtrl{
 		service: service,
 	}

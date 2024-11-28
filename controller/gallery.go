@@ -9,17 +9,17 @@ import (
 	"strconv"
 )
 
-type GalleryController struct {
+type GalleryCtrl struct {
 	service service.GalleryService
 }
 
-func NewGalleryController(service service.GalleryService) *GalleryController {
-	return &GalleryController{
+func NewGalleryCtrl(service service.GalleryService) *GalleryCtrl {
+	return &GalleryCtrl{
 		service: service,
 	}
 }
 
-func (ctrl *GalleryController) Create(c *gin.Context) {
+func (ctrl *GalleryCtrl) Create(c *gin.Context) {
 	data := new(models.GalleryData)
 	// 1.参数绑定
 	if err := c.ShouldBindJSON(data); err != nil {
@@ -38,7 +38,7 @@ func (ctrl *GalleryController) Create(c *gin.Context) {
 	ResponseSuccess(c, createSuccess)
 }
 
-func (ctrl *GalleryController) Delete(c *gin.Context) {
+func (ctrl *GalleryCtrl) Delete(c *gin.Context) {
 	// 1.获取参数
 	qid := c.Query("id")
 	id, err := strconv.Atoi(qid)
@@ -59,7 +59,7 @@ func (ctrl *GalleryController) Delete(c *gin.Context) {
 	ResponseSuccess(c, deleteSuccess)
 }
 
-func (ctrl *GalleryController) Update(c *gin.Context) {
+func (ctrl *GalleryCtrl) Update(c *gin.Context) {
 	data := new(models.GalleryData)
 	// 1.参数检验
 	if err := c.ShouldBindJSON(data); err != nil {
@@ -79,7 +79,7 @@ func (ctrl *GalleryController) Update(c *gin.Context) {
 	ResponseSuccess(c, updateSuccess)
 }
 
-func (ctrl *GalleryController) GetList(c *gin.Context) {
+func (ctrl *GalleryCtrl) GetList(c *gin.Context) {
 	// 1.获取参数
 	query := new(models.GalleryQuery)
 

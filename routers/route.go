@@ -27,11 +27,12 @@ func SetupRouter(mode string) *gin.Engine {
 	r.Static("/api/file", "/app/statics/file")
 
 	// 初始化控制器
-	heartWordsCtl := InitHeartWordsController()
-	galleryCtl := InitGalleryController()
-	galleryKindCtl := InitGalleryKindController()
-	essayKindCtrl := InitEssayKindController()
-	essayLabelCtrl := InitEssayLabelController()
+	heartWordsCtl := InitHeartWordsCtrl()
+	galleryCtl := InitGalleryCtrl()
+	galleryKindCtl := InitGalleryKindCtrl()
+	essayKindCtrl := InitEssayKindCtrl()
+	essayLabelCtrl := InitEssayLabelCtrl()
+	essayCtrl := InitEssayCtrl()
 
 	v0 := r.Group("/api/base")
 	v0.Use(middlewares.SaveUserIp())
@@ -41,8 +42,8 @@ func SetupRouter(mode string) *gin.Engine {
 
 	v1 := r.Group("/api/base")
 	{
-		v1.GET("/essay_list", controller.ResponseEssayListHandler)
-		v1.GET("/essay_content", controller.ResponseEssayDataHandler)
+		v1.GET("/essay_list", essayCtrl.GetList)
+		v1.GET("/essay_content", essayCtrl.Read)
 		v1.GET("/heartWords_list", heartWordsCtl.GetList)
 	}
 
@@ -58,9 +59,9 @@ func SetupRouter(mode string) *gin.Engine {
 	v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateDataMiddleware())
 	{
 		// essay
-		v3Cache.POST("/essay", controller.CreateEssayHandler)
-		v3Cache.DELETE("/essay", controller.DeleteEssayHandler)
-		v3Cache.PUT("/essay", controller.UpdateEssayHandler)
+		v3Cache.POST("/essay", essayCtrl.Create)
+		v3Cache.DELETE("/essay", essayCtrl.Delete)
+		v3Cache.PUT("/essay", essayCtrl.Update)
 
 		// label
 		v3Cache.POST("/label", essayLabelCtrl.Create)
@@ -101,7 +102,7 @@ func SetupRouter(mode string) *gin.Engine {
 
 	v4 := r.Group("/api/keyword")
 	{
-		v4.POST("/search", controller.ResponseDataAboutSearchKeyword)
+		v4.POST("/search", essayCtrl.GetListBySearch)
 	}
 
 	r.NoRoute(func(c *gin.Context) {

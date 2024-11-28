@@ -7,52 +7,62 @@ import (
 	"blog/service"
 )
 
-func InitHeartWordsController() *controller.HeartWordsController {
+func InitHeartWordsCtrl() *controller.HeartWordsCtrl {
 	// 初始化仓库和服务
 	var repo repository.HeartWordsRepo
 	repo = repository.NewHeartWordsRepoMySQL(mysql.DB)
 	var ser service.HeartWordsService
 	ser = service.NewHeartWordsRepoService(repo)
 	// 初始化控制器
-	return controller.NewHeartWordsController(ser)
+	return controller.NewHeartWordsCtrl(ser)
 }
 
-func InitGalleryController() *controller.GalleryController {
+func InitGalleryCtrl() *controller.GalleryCtrl {
 	// 初始化仓库和服务
 	var repo repository.GalleryRepo
 	repo = repository.NewGalleryRepoMySQL(mysql.DB)
 	var ser service.GalleryService
 	ser = service.NewGalleryRepoService(repo)
 	// 初始化控制器
-	return controller.NewGalleryController(ser)
+	return controller.NewGalleryCtrl(ser)
 }
 
-func InitGalleryKindController() *controller.GalleryKindController {
+func InitGalleryKindCtrl() *controller.GalleryKindCtrl {
 	// 初始化仓库和服务
 	var repo repository.GalleryKindRepo
 	repo = repository.NewGalleryKindRepoMySQL(mysql.DB)
 	var ser service.GalleryKindService
 	ser = service.NewGalleryKindRepoService(repo)
 	// 初始化控制器
-	return controller.NewGalleryKindController(ser)
+	return controller.NewGalleryKindCtrl(ser)
 }
 
-func InitEssayKindController() *controller.EssayKindController {
+func InitEssayKindCtrl() *controller.EssayKindCtrl {
 	// 初始化仓库和服务
 	var repo repository.EssayKindRepo
 	repo = repository.NewEssayKindRepoMySQL(mysql.DB)
 	var ser service.EssayKindService
 	ser = service.NewEssayKindRepoService(repo)
 	// 初始化控制器
-	return controller.NewEssayKindController(ser)
+	return controller.NewEssayKindCtrl(ser)
 }
 
-func InitEssayLabelController() *controller.EssayLabelCtrl {
+func InitEssayLabelCtrl() *controller.EssayLabelCtrl {
 	// 初始化仓库和服务
 	var repo repository.EssayLabelRepo
 	repo = repository.NewEssayLabelRepoMySQL(mysql.DB)
 	var ser service.EssayLabelService
 	ser = service.NewEssayLabelRepoService(repo)
 	// 初始化控制器
-	return controller.NewEssayLabelController(ser)
+	return controller.NewEssayLabelCtrl(ser)
+}
+
+func InitEssayCtrl() *controller.EssayCtrl {
+	// 初始化仓库和服务
+	var repo repository.EssayRepo
+	repo = repository.NewEssayRepoMySQL(mysql.DB)
+	var ser service.EssayService
+	ser = service.NewEssayRepoService(repo)
+	// 初始化控制器
+	return controller.NewEssayCtrl(ser)
 }
