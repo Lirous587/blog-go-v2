@@ -6,9 +6,9 @@ import (
 )
 
 type EssayKindService interface {
-	Create(data *models.EssayKindData) error
+	Create(data *models.EssayKindParam) error
 	Delete(id int) error
-	Update(data *models.EssayKindData) error
+	Update(data *models.EssayKindUpdateParam) error
 }
 
 type EssayKindRepoService struct {
@@ -21,11 +21,11 @@ func NewEssayKindRepoService(repo repository.EssayKindRepo) EssayKindRepoService
 	}
 }
 
-func (s EssayKindRepoService) Create(data *models.EssayKindData) error {
+func (s EssayKindRepoService) Create(data *models.EssayKindParam) error {
 	return s.repo.Create(data)
 }
 
-func (s EssayKindRepoService) Update(data *models.EssayKindData) error {
+func (s EssayKindRepoService) Update(data *models.EssayKindUpdateParam) error {
 	return s.repo.Update(data)
 }
 

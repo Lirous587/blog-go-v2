@@ -19,7 +19,7 @@ func NewEssayKindCtrl(service service.EssayKindService) *EssayKindCtrl {
 }
 
 func (ctrl *EssayKindCtrl) Create(c *gin.Context) {
-	data := new(models.EssayKindData)
+	data := new(models.EssayKindParam)
 	// 1.参数绑定
 	if err := c.ShouldBindJSON(data); err != nil {
 		zap.L().Error("c.ShouldBindJSON(data) failed,err:", zap.Error(err))
@@ -37,7 +37,7 @@ func (ctrl *EssayKindCtrl) Create(c *gin.Context) {
 
 func (ctrl *EssayKindCtrl) Update(c *gin.Context) {
 	//1.参数检验
-	var data = new(models.EssayKindData)
+	var data = new(models.EssayKindUpdateParam)
 	if err := c.ShouldBindJSON(data); err != nil {
 		zap.L().Error("c.ShouldBindJSON(data) failed,err:", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)

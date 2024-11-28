@@ -6,8 +6,8 @@ import (
 )
 
 type EssayKindRepo interface {
-	Create(data *models.EssayKindData) error
-	Update(data *models.EssayKindData) error
+	Create(data *models.EssayKindParam) error
+	Update(data *models.EssayKindUpdateParam) error
 	Delete(id int) error
 	GetList() (*[]models.EssayKindData, error)
 }
@@ -22,7 +22,7 @@ func NewEssayKindRepoMySQL(db *sqlx.DB) *EssayKindRepoMySQL {
 	}
 }
 
-func (r *EssayKindRepoMySQL) Create(data *models.EssayKindData) error {
+func (r *EssayKindRepoMySQL) Create(data *models.EssayKindParam) error {
 	sqlStr := `INSERT INTO e_kind(name, icon,introduction) VALUES (:name,:icon,:introduction)`
 	_, err := r.db.NamedExec(sqlStr, data)
 	return err
@@ -34,7 +34,7 @@ func (r *EssayKindRepoMySQL) Delete(id int) error {
 	return err
 }
 
-func (r *EssayKindRepoMySQL) Update(data *models.EssayKindData) error {
+func (r *EssayKindRepoMySQL) Update(data *models.EssayKindUpdateParam) error {
 	sqlStr := `UPDATE e_kind SET name = :name,icon = :icon,introduction = :introduction WHERE id = :id`
 	_, err := r.db.NamedExec(sqlStr, data)
 	return err
