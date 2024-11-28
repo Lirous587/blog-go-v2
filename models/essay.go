@@ -1,39 +1,39 @@
 package models
 
 type EssayData struct {
-	ID            int              `json:"id" db:"id"`
 	Name          string           `json:"name" db:"name"`
-	LabelList     []EssayLabelData `json:"label_list,omitempty"`
 	KindName      string           `json:"kind_name,omitempty" db:"kind_name"`
-	KindID        int              `json:"kind_id,omitempty" db:"kind_id"`
 	Introduction  string           `json:"introduction,omitempty" db:"introduction"`
 	CreatedTime   string           `json:"created_time" db:"created_time"`
-	VisitedTimes  int64            `json:"visited_times,omitempty" db:"visited_times"`
 	Content       string           `json:"content,omitempty" db:"content"`
+	VisitedTimes  int64            `json:"visited_times,omitempty" db:"visited_times"`
+	LabelList     []EssayLabelData `json:"label_list,omitempty"`
 	Keywords      []string         `json:"keywords,omitempty"`
-	IfRecommend   bool             `json:"if_recommend" db:"if_recommend"`
-	IfTop         bool             `json:"if_top" db:"if_top"`
-	Img           `json:"img" binding:"required"`
-	NearEssayList []EssayData `json:"near_essay_list,omitempty"`
+	NearEssayList []EssayData      `json:"near_essay_list,omitempty"`
+	Img
+	ID          int  `json:"id" db:"id"`
+	KindID      int  `json:"kind_id,omitempty" db:"kind_id"`
+	IfRecommend bool `json:"if_recommend" db:"if_recommend"`
+	IfTop       bool `json:"if_top" db:"if_top"`
 }
 
 type EssayParams struct {
 	Name         string   `json:"name" binding:"required" db:"name"`
-	KindID       int      `json:"kind_id" binding:"required" db:"kind_id"`
-	LabelIds     []int    `json:"label_ids" bind:"required"`
 	Introduction string   `json:"introduction" binding:"required" db:"introduction"`
 	CreatedTime  string   `json:"created_time" db:"created_time"`
 	Content      string   `json:"content" binding:"required" db:"content"`
-	IfTop        bool     `json:"if_top" binging:"required" db:"if_top"`
-	IfRecommend  bool     `json:"if_recommend"  binging:"required" db:"if_recommend"`
+	LabelIds     []int    `json:"label_ids" bind:"required"`
 	Keywords     []string `json:"keywords"`
-	Img          `json:"img" binding:"required"`
+	Img          `binding:"required"`
+	KindID       int  `json:"kind_id" binding:"required" db:"kind_id"`
+	IfTop        bool `json:"if_top" binging:"required" db:"if_top"`
+	IfRecommend  bool `json:"if_recommend"  binging:"required" db:"if_recommend"`
 }
 
 type EssayUpdateParams struct {
 	EssayParams
-	ID          int   `json:"id" db:"id"`
 	OldLabelIds []int `json:"old_label_ids" binding:"required"`
+	ID          int   `json:"id" db:"id"`
 }
 
 type EssayQuery struct {
@@ -54,6 +54,6 @@ type SearchParam struct {
 }
 
 type EssayIdAndKeyword struct {
-	EssayId  int      `json:"essay_id" binging:"required"`
 	Keywords []string `json:"keywords"`
+	EssayId  int      `json:"essay_id" binging:"required"`
 }

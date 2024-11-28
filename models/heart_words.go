@@ -1,26 +1,26 @@
 package models
 
 type HeartWordsData struct {
-	ID          int    `json:"id" db:"id"`
 	Content     string `json:"content" db:"content"`
 	Source      string `json:"source" db:"source"`
-	IfCouldType bool   `json:"if_could_type" db:"if_could_type"`
 	Img         `json:"img" binding:"required"`
+	ID          int  `json:"id" db:"id"`
+	IfCouldType bool `json:"if_could_type" db:"if_could_type"`
 }
 
 type HeartWordsParam struct {
 	Content     string `json:"content" binding:"required"  db:"content"`
 	Source      string `json:"source" binding:"required"  db:"source"`
-	IfCouldType bool   `json:"if_could_type" db:"if_could_type"`
 	Img         `json:"img" binding:"required"`
+	IfCouldType bool `json:"if_could_type" db:"if_could_type"`
 }
 
 type HeartWordsUpdateParam struct {
-	ID          int    `json:"id" binding:"required" db:"id"`
 	Content     string `json:"content" binding:"required"  db:"content"`
 	Source      string `json:"source" binding:"required"  db:"source"`
-	IfCouldType bool   `json:"if_could_type" db:"if_could_type"`
+	ID          int    `json:"id" binding:"required" db:"id"`
 	Img         `json:"img" binding:"required"`
+	IfCouldType bool `json:"if_could_type" db:"if_could_type"`
 }
 
 type HeartWordsQuery struct {

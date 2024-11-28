@@ -10,8 +10,8 @@ type GalleryKindParams struct {
 }
 
 type GalleryKindUpdateParams struct {
-	ID   int    `json:"id" binding:"required" db:"id"`
 	Name string `json:"name" binding:"required" db:"name"`
+	ID   int    `json:"id" binding:"required" db:"id"`
 }
 
 type GalleryKindQuery struct {
