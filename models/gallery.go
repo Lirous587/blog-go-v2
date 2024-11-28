@@ -1,10 +1,10 @@
 package models
 
 type GalleryData struct {
-	ImgUrl   string `json:"img_url" binding:"required" db:"img_url"`
+	ImgUrl   string `json:"img_url" db:"img_url"`
 	KindName string `json:"kind_name" db:"name"`
 	ID       int    `json:"id" db:"id"`
-	KindID   int    `json:"kind_id" binding:"required" db:"kind_id"`
+	KindID   int    `json:"kind_id" db:"kind_id"`
 }
 
 type GalleryParams struct {

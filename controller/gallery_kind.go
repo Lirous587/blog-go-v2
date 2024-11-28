@@ -19,7 +19,7 @@ func NewGalleryKindCtrl(service service.GalleryKindService) *GalleryKindCtrl {
 }
 
 func (ctrl *GalleryKindCtrl) Create(c *gin.Context) {
-	data := new(models.GalleryKindData)
+	data := new(models.GalleryKindParams)
 	// 1.参数绑定
 	if err := c.ShouldBindJSON(data); err != nil {
 		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
@@ -59,7 +59,7 @@ func (ctrl *GalleryKindCtrl) Delete(c *gin.Context) {
 }
 
 func (ctrl *GalleryKindCtrl) Update(c *gin.Context) {
-	data := new(models.GalleryKindData)
+	data := new(models.GalleryKindUpdateParams)
 	// 1.参数检验
 	if err := c.ShouldBindJSON(data); err != nil {
 		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))

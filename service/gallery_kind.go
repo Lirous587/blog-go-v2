@@ -6,9 +6,9 @@ import (
 )
 
 type GalleryKindService interface {
-	Create(data *models.GalleryKindData) error
+	Create(data *models.GalleryKindParams) error
 	Read(id int) (*models.GalleryKindData, error)
-	Update(data *models.GalleryKindData) error
+	Update(data *models.GalleryKindUpdateParams) error
 	Delete(id int) error
 	GetList() (*models.GalleryKindList, error)
 }
@@ -23,7 +23,7 @@ func NewGalleryKindRepoService(repo repository.GalleryKindRepo) *GalleryKindRepo
 	}
 }
 
-func (h *GalleryKindRepoService) Create(data *models.GalleryKindData) error {
+func (h *GalleryKindRepoService) Create(data *models.GalleryKindParams) error {
 	return h.repo.Create(data)
 }
 
@@ -31,7 +31,7 @@ func (h *GalleryKindRepoService) Read(id int) (data *models.GalleryKindData, err
 	return h.repo.Read(id)
 }
 
-func (h *GalleryKindRepoService) Update(data *models.GalleryKindData) error {
+func (h *GalleryKindRepoService) Update(data *models.GalleryKindUpdateParams) error {
 	return h.repo.Update(data)
 }
 

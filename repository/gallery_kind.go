@@ -10,9 +10,9 @@ type GalleryKindRepoMySQL struct {
 }
 
 type GalleryKindRepo interface {
-	Create(data *models.GalleryKindData) error
+	Create(data *models.GalleryKindParams) error
 	Read(id int) (*models.GalleryKindData, error)
-	Update(data *models.GalleryKindData) error
+	Update(data *models.GalleryKindUpdateParams) error
 	Delete(id int) error
 	GetList() (*models.GalleryKindList, error)
 }
@@ -23,8 +23,8 @@ func NewGalleryKindRepoMySQL(db *sqlx.DB) *GalleryKindRepoMySQL {
 	}
 }
 
-func (r *GalleryKindRepoMySQL) Create(data *models.GalleryKindData) error {
-	sqlStr := `INSERT INTO gallery_kind(name ) VALUES (:name)`
+func (r *GalleryKindRepoMySQL) Create(data *models.GalleryKindParams) error {
+	sqlStr := `INSERT INTO gallery_kind(name) VALUES (:name)`
 	_, err := r.db.NamedExec(sqlStr, data)
 	return err
 }
@@ -35,7 +35,7 @@ func (r *GalleryKindRepoMySQL) Read(id int) (data *models.GalleryKindData, err e
 	return
 }
 
-func (r *GalleryKindRepoMySQL) Update(data *models.GalleryKindData) error {
+func (r *GalleryKindRepoMySQL) Update(data *models.GalleryKindUpdateParams) error {
 	sqlStr := `UPDATE gallery_kind SET name = :name WHERE id = :id`
 	_, err := r.db.NamedExec(sqlStr, data)
 	return err
