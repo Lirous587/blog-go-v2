@@ -19,7 +19,7 @@ func NewHeartWordsCtrl(service service.HeartWordsService) *HeartWordsCtrl {
 }
 
 func (ctrl *HeartWordsCtrl) Create(c *gin.Context) {
-	data := new(models.HeartWordsData)
+	data := new(models.HeartWordsParam)
 	// 1.参数绑定
 	if err := c.ShouldBindJSON(data); err != nil {
 		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
@@ -59,7 +59,7 @@ func (ctrl *HeartWordsCtrl) Delete(c *gin.Context) {
 }
 
 func (ctrl *HeartWordsCtrl) Update(c *gin.Context) {
-	data := new(models.HeartWordsData)
+	data := new(models.HeartWordsUpdateParam)
 	// 1.参数检验
 	if err := c.ShouldBindJSON(data); err != nil {
 		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))

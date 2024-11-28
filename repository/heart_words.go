@@ -9,9 +9,9 @@ import (
 )
 
 type HeartWordsRepo interface {
-	Create(data *models.HeartWordsData) error
+	Create(data *models.HeartWordsParam) error
 	Read(id int) (*models.HeartWordsData, error)
-	Update(data *models.HeartWordsData) error
+	Update(data *models.HeartWordsUpdateParam) error
 	Delete(id int) error
 	GetList(query *models.HeartWordsQuery) (*models.HeartWordsListAndPage, error)
 	GetRecommendList() (*[]models.HeartWordsData, error)
@@ -27,7 +27,7 @@ func NewHeartWordsRepoMySQL(db *sqlx.DB) *HeartWordsRepoMySQL {
 	}
 }
 
-func (r *HeartWordsRepoMySQL) Create(data *models.HeartWordsData) error {
+func (r *HeartWordsRepoMySQL) Create(data *models.HeartWordsParam) error {
 	sqlStr := `INSERT INTO heart_words(content, source,img_id,if_could_type) VALUES (:content,:source,:img_id,:if_could_type)`
 	_, err := r.db.NamedExec(sqlStr, data)
 	return err
@@ -39,7 +39,7 @@ func (r *HeartWordsRepoMySQL) Read(id int) (data *models.HeartWordsData, err err
 	return data, err
 }
 
-func (r *HeartWordsRepoMySQL) Update(data *models.HeartWordsData) error {
+func (r *HeartWordsRepoMySQL) Update(data *models.HeartWordsUpdateParam) error {
 	sqlStr := `UPDATE heart_words SET  content = :content,source = :source,img_id = :img_id, if_could_type = :if_could_type WHERE id = :id`
 	_, err := r.db.NamedExec(sqlStr, data)
 	return err
@@ -51,8 +51,8 @@ func (r *HeartWordsRepoMySQL) Delete(id int) error {
 	return err
 }
 
-func (r *HeartWordsRepoMySQL) GetList(query *models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
-	data = new(models.HeartWordsListAndPage)
+func (r *HeartWordsRepoMySQL) GetList(query *models.HeartWordsQuery) (*models.HeartWordsListAndPage, error) {
+	data := new(models.HeartWordsListAndPage)
 	var wg sync.WaitGroup
 	taskCount := 2
 	var errChan = make(chan error, taskCount)
@@ -76,18 +76,22 @@ func (r *HeartWordsRepoMySQL) GetList(query *models.HeartWordsQuery) (data *mode
 
 	go func() {
 		defer wg.Done()
-		if err := r.getList(data, whereClause, args); err != nil {
+		list, err := r.getList(whereClause, args)
+		if err != nil {
 			errChan <- fmt.Errorf("getList failed, err: %w", err)
 			return
 		}
+		data.HeartWordsList = *list
 	}()
 
 	go func() {
 		defer wg.Done()
-		if err := r.getCount(data, query.PageSize, whereClause, args); err != nil {
+		totalCount, err := r.getCount(whereClause, args)
+		if err != nil {
 			errChan <- fmt.Errorf("getList failed, err: %w", err)
 			return
 		}
+		data.TotalPages = (totalCount + query.PageSize - 1) / query.Page
 	}()
 
 	wg.Wait()
@@ -113,8 +117,9 @@ func (r *HeartWordsRepoMySQL) GetRecommendList() (data *[]models.HeartWordsData,
 	return
 }
 
-func (r *HeartWordsRepoMySQL) getList(data *models.HeartWordsListAndPage, whereClause string, args []interface{}) error {
-	rawDataList := make([]models.HeartWordsData, 0, 10)
+func (r *HeartWordsRepoMySQL) getList(whereClause string, args []interface{}) (list *[]models.HeartWordsData, err error) {
+	list = new([]models.HeartWordsData)
+	*list = make([]models.HeartWordsData, 0, 10)
 	baseSelect := `
         SELECT h.id, h.content, h.source, h.img_id, h.if_could_type, g.img_url
         FROM heart_words h
@@ -124,29 +129,20 @@ func (r *HeartWordsRepoMySQL) getList(data *models.HeartWordsListAndPage, whereC
 
 	sqlStr := fmt.Sprintf("%s %s %s LIMIT ? OFFSET ?", baseSelect, whereClause, orderBy)
 
-	if err := r.db.Select(&rawDataList, sqlStr, args...); err != nil {
-		return err
+	if err = r.db.Select(list, sqlStr, args...); err != nil {
+		return
 	}
-
-	// 处理查询结果
-	data.HeartWordsList = make([]models.HeartWordsData, len(rawDataList))
-	for i, raw := range rawDataList {
-		data.HeartWordsList[i] = raw
-	}
-	return nil
+	return
 }
 
-func (r *HeartWordsRepoMySQL) getCount(data *models.HeartWordsListAndPage, PageSize int, whereClause string, args []interface{}) error {
+func (r *HeartWordsRepoMySQL) getCount(whereClause string, args []interface{}) (totalCount int, err error) {
 	baseSql := `
         SELECT COUNT(DISTINCT h.id)
         FROM heart_words h
     `
-	var totalCount int
 	sqlStr := fmt.Sprintf("%s %s", baseSql, whereClause)
-	if err := r.db.Get(&totalCount, sqlStr, args[:len(args)-2]...); err != nil {
-		return err
+	if err = r.db.Get(&totalCount, sqlStr, args[:len(args)-2]...); err != nil {
+		return
 	}
-
-	data.TotalPages = (totalCount + PageSize - 1) / PageSize
-	return nil
+	return
 }

@@ -6,9 +6,9 @@ import (
 )
 
 type HeartWordsService interface {
-	Create(data *models.HeartWordsData) error
+	Create(data *models.HeartWordsParam) error
 	Read(id int) (*models.HeartWordsData, error)
-	Update(data *models.HeartWordsData) error
+	Update(data *models.HeartWordsUpdateParam) error
 	Delete(id int) error
 	GetList(query *models.HeartWordsQuery) (*models.HeartWordsListAndPage, error)
 }
@@ -23,7 +23,7 @@ func NewHeartWordsRepoService(repo repository.HeartWordsRepo) *HeartWordsRepoSer
 	}
 }
 
-func (h *HeartWordsRepoService) Create(data *models.HeartWordsData) error {
+func (h *HeartWordsRepoService) Create(data *models.HeartWordsParam) error {
 	return h.repo.Create(data)
 }
 
@@ -31,7 +31,7 @@ func (h *HeartWordsRepoService) Read(id int) (data *models.HeartWordsData, err e
 	return h.repo.Read(id)
 }
 
-func (h *HeartWordsRepoService) Update(data *models.HeartWordsData) error {
+func (h *HeartWordsRepoService) Update(data *models.HeartWordsUpdateParam) error {
 	return h.repo.Update(data)
 }
 
