@@ -2,13 +2,12 @@ package main
 
 import (
 	"blog/cache"
-	"blog/dao/mysql"
-	"blog/dao/redis"
 	"blog/logger"
 	"blog/pkg/snowflake"
-	ticker "blog/pkg/tickerTask"
+	"blog/repository"
 	"blog/routers"
 	"blog/setting"
+	"blog/ticker"
 	"fmt"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -24,6 +23,7 @@ func main() {
 	if err := logger.Init(viper.GetString("app.mode")); err != nil {
 		return
 	}
+
 	defer func() {
 		//退出前写入全部日志
 		if err := zap.L().Sync(); err != nil {
@@ -38,23 +38,20 @@ func main() {
 	}
 
 	//4.初始化mysql
-	if err := mysql.Init(); err != nil {
+	if err := repository.Init(); err != nil {
 		fmt.Printf("init mysql failed! err:%v", err)
 		return
 	}
 
 	//5.初始化redis
-	if err := redis.Init(); err != nil {
+	if err := cache.Init(); err != nil {
 		fmt.Printf("init redis failed err:%v", err)
 		return
 	}
-	defer redis.Close()
+	defer cache.Close()
 
 	//6.初始计时器
 	ticker.Init()
-
-	//7初始缓存
-	cache.Init()
 
 	//8.注册路由
 	r := routers.SetupRouter(viper.GetString("app.mode"))
@@ -67,4 +64,5 @@ func main() {
 		fmt.Printf("run server failed,err:%v", err)
 		return
 	}
+
 }

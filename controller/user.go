@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"blog/logic"
 	"blog/models"
+	"blog/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"strings"
@@ -24,7 +24,7 @@ func SignupHandler(c *gin.Context) {
 		return
 	}
 	//2.业务处理
-	if err := logic.Signup(p); err != nil {
+	if err := service.Signup(p); err != nil {
 		zap.L().Error("logic.Signup(p) failed", zap.Error(err))
 		ResponseError(c, CodeUserExist)
 		return
@@ -43,7 +43,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	//2.业务处理
-	if err := logic.Login(p); err != nil {
+	if err := service.Login(p); err != nil {
 		zap.L().Error("logic.Login() failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
@@ -63,7 +63,7 @@ func LogoutHandler(c *gin.Context) {
 	token := parts[1]
 
 	//2.业务处理 --> 将该token储存在数据库中
-	if err := logic.Logout(token); err != nil {
+	if err := service.Logout(token); err != nil {
 		zap.L().Error("logic.Logout(token) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
@@ -90,7 +90,7 @@ func UpdateUserMsgHandler(c *gin.Context) {
 	}
 
 	//2.业务处理
-	if err = logic.UpdateUserMsg(p, id); err != nil {
+	if err = service.UpdateUserMsg(p, id); err != nil {
 		zap.L().Error("logic.UpdateUserMsg(user, id) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return

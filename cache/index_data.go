@@ -1,7 +1,6 @@
 package cache
 
 import (
-	"blog/dao/mysql"
 	"blog/models"
 	"blog/repository"
 	"fmt"
@@ -16,27 +15,27 @@ var (
 
 func refreshData(data *models.IndexData) (err error) {
 	var kindList = new([]models.EssayKindData)
-	ekRepo := repository.EssayKindRepo(repository.NewEssayKindRepoMySQL(mysql.DB))
+	ekRepo := repository.EssayKindRepo(repository.NewEssayKindRepoMySQL(repository.DB))
 	kindList, err = ekRepo.GetList()
 	if err != nil {
 		return err
 	}
 
 	var labelList = new([]models.EssayLabelData)
-	elRepo := repository.EssayLabelRepo(repository.NewEssayLabelRepoMySQL(mysql.DB))
+	elRepo := repository.EssayLabelRepo(repository.NewEssayLabelRepoMySQL(repository.DB))
 	labelList, err = elRepo.GetList()
 	if err != nil {
 		return err
 	}
 
 	var essayList = new([]models.EssayData)
-	repo := repository.EssayRepo(repository.NewEssayRepoMySQL(mysql.DB))
+	repo := repository.EssayRepo(repository.NewEssayRepoMySQL(repository.DB))
 	if essayList, err = repo.GetRecommendList(); err != nil {
 		return err
 	}
 
 	var heartWordsList *[]models.HeartWordsData
-	hwRepo := repository.HeartWordsRepo(repository.NewHeartWordsRepoMySQL(mysql.DB))
+	hwRepo := repository.HeartWordsRepo(repository.NewHeartWordsRepoMySQL(repository.DB))
 	if heartWordsList, err = hwRepo.GetRecommendList(); err != nil {
 		return err
 	}

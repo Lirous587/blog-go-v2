@@ -1,4 +1,4 @@
-package redis
+package cache
 
 import (
 	"blog/models"
@@ -82,42 +82,6 @@ func SetYearMonthWeekTimesZoneForZset(preKey string, param string, scoreIncremen
 	return nil
 }
 
-// SetYearMonthWeekTimesZoneForSet 设置年月日相关set
-func SetYearMonthWeekTimesZoneForSet(preKey string, param string) (err error) {
-	// 1.首先对关键词做去空格和小写化
-	member := strings.ToLower(strings.TrimSpace(param))
-
-	// 2.给每个关键词一个总的统计次数 分别实现 年 月 周 关键词统计
-	yearKey := fmt.Sprintf("%s%s:", preKey, year)
-	monthKey := fmt.Sprintf("%s%s:", preKey, month)
-	weekKey := fmt.Sprintf("%s%s:", preKey, week)
-
-	// 3.得到剩余时间
-	remainingTime := getRemainingTime()
-
-	// 4.用集合实现 --> 内置排序
-	pipe := client.Pipeline()
-
-	// 年统计
-	pipe.SAdd(yearKey, member)
-	pipe.Expire(yearKey, time.Duration(remainingTime.Year)*time.Second)
-
-	// 月统计
-	pipe.SAdd(monthKey, member)
-	pipe.Expire(monthKey, time.Duration(remainingTime.Month)*time.Second)
-
-	// 周统计
-	pipe.SAdd(weekKey, member)
-	pipe.Expire(weekKey, time.Duration(remainingTime.Week)*time.Second)
-
-	// 执行管道命令
-	if _, err = pipe.Exec(); err != nil {
-		return fmt.Errorf("failed to set member: %w", err)
-	}
-	return nil
-}
-
-// GetYearMonthWeekTimesZoneForZsetRank 得到年月日相关Zset
 func GetYearMonthWeekTimesZoneForZsetRank(rankKind *models.RankKindForZset, preKey string) (err error) {
 	//	得到年月日的keywords的zset
 	yearKey := fmt.Sprintf("%s%s:", preKey, year)
@@ -165,51 +129,6 @@ func getTopXFromZSet(key string, count int64) (models.RankListForZset, error) {
 	return rankList, nil
 }
 
-// GetYearMonthWeekTimesZoneForSet 得到年月日相关set
-func GetYearMonthWeekTimesZoneForSet(setKind *models.UserIpForSet, preKey string) (err error) {
-	//	得到年月日的keywords的zset
-	yearKey := fmt.Sprintf("%s%s:", preKey, year)
-	monthKey := fmt.Sprintf("%s%s:", preKey, month)
-	weekKey := fmt.Sprintf("%s%s:", preKey, week)
-
-	// 从每个zset中获取前10条数据
-	yearCount, err := getCountFromSet(yearKey)
-	if err != nil {
-		return err
-	}
-
-	monthCount, err := getCountFromSet(monthKey)
-	if err != nil {
-		return err
-	}
-
-	weekCount, err := getCountFromSet(weekKey)
-	if err != nil {
-		return err
-	}
-
-	// 合并结果
-	*setKind = models.UserIpForSet{
-		Year:  yearCount,
-		Month: monthCount,
-		Week:  weekCount,
-	}
-
-	return nil
-}
-
-// getCountFromSet 得到set的成员值
-func getCountFromSet(key string) (int64, error) {
-	count, err := client.SCard(key).Result()
-	if err != nil {
-		return 0, err
-	}
-	return count, nil
-}
-
-// ticker
-
-// CleanLowerZsetEveryMonth 删除低频元素
 func CleanLowerZsetEveryMonth() error {
 	preKey := getRedisKey(KeySearchKeyWordTimes)
 	yearKey := fmt.Sprintf("%s%s:", preKey, year)

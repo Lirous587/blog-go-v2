@@ -2,8 +2,8 @@ package middlewares
 
 import (
 	"blog/controller"
-	"blog/dao/mysql"
 	"blog/pkg/jwt"
+	"blog/repository"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -63,5 +63,5 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 
 func JWTInvalidToken(token string) error {
 	//1.查看token是否在数据库中
-	return mysql.CheckTokenIfInvalid(token)
+	return repository.CheckTokenIfInvalid(token)
 }

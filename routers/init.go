@@ -2,7 +2,6 @@ package routers
 
 import (
 	"blog/controller"
-	"blog/dao/mysql"
 	"blog/repository"
 	"blog/service"
 )
@@ -10,7 +9,7 @@ import (
 func InitHeartWordsCtrl() *controller.HeartWordsCtrl {
 	// 初始化仓库和服务
 	var repo repository.HeartWordsRepo
-	repo = repository.NewHeartWordsRepoMySQL(mysql.DB)
+	repo = repository.NewHeartWordsRepoMySQL(repository.DB)
 	var ser service.HeartWordsService
 	ser = service.NewHeartWordsRepoService(repo)
 	// 初始化控制器
@@ -20,7 +19,7 @@ func InitHeartWordsCtrl() *controller.HeartWordsCtrl {
 func InitGalleryCtrl() *controller.GalleryCtrl {
 	// 初始化仓库和服务
 	var repo repository.GalleryRepo
-	repo = repository.NewGalleryRepoMySQL(mysql.DB)
+	repo = repository.NewGalleryRepoMySQL(repository.DB)
 	var ser service.GalleryService
 	ser = service.NewGalleryRepoService(repo)
 	// 初始化控制器
@@ -30,7 +29,7 @@ func InitGalleryCtrl() *controller.GalleryCtrl {
 func InitGalleryKindCtrl() *controller.GalleryKindCtrl {
 	// 初始化仓库和服务
 	var repo repository.GalleryKindRepo
-	repo = repository.NewGalleryKindRepoMySQL(mysql.DB)
+	repo = repository.NewGalleryKindRepoMySQL(repository.DB)
 	var ser service.GalleryKindService
 	ser = service.NewGalleryKindRepoService(repo)
 	// 初始化控制器
@@ -40,7 +39,7 @@ func InitGalleryKindCtrl() *controller.GalleryKindCtrl {
 func InitEssayKindCtrl() *controller.EssayKindCtrl {
 	// 初始化仓库和服务
 	var repo repository.EssayKindRepo
-	repo = repository.NewEssayKindRepoMySQL(mysql.DB)
+	repo = repository.NewEssayKindRepoMySQL(repository.DB)
 	var ser service.EssayKindService
 	ser = service.NewEssayKindRepoService(repo)
 	// 初始化控制器
@@ -50,7 +49,7 @@ func InitEssayKindCtrl() *controller.EssayKindCtrl {
 func InitEssayLabelCtrl() *controller.EssayLabelCtrl {
 	// 初始化仓库和服务
 	var repo repository.EssayLabelRepo
-	repo = repository.NewEssayLabelRepoMySQL(mysql.DB)
+	repo = repository.NewEssayLabelRepoMySQL(repository.DB)
 	var ser service.EssayLabelService
 	ser = service.NewEssayLabelRepoService(repo)
 	// 初始化控制器
@@ -60,7 +59,7 @@ func InitEssayLabelCtrl() *controller.EssayLabelCtrl {
 func InitEssayCtrl() *controller.EssayCtrl {
 	// 初始化仓库和服务
 	var repo repository.EssayRepo
-	repo = repository.NewEssayRepoMySQL(mysql.DB)
+	repo = repository.NewEssayRepoMySQL(repository.DB)
 	var ser service.EssayService
 	ser = service.NewEssayRepoService(repo)
 	// 初始化控制器

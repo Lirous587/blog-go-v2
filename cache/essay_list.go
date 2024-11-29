@@ -1,8 +1,6 @@
 package cache
 
 import (
-	"blog/dao/mysql"
-	"blog/dao/redis"
 	"blog/models"
 	"blog/repository"
 	"fmt"
@@ -18,14 +16,14 @@ var (
 func GetEssayListInit() (*[]models.EssayData, error) {
 	rwLockForEssayList.Lock()
 	defer rwLockForEssayList.Unlock()
-	repo := repository.EssayRepo(repository.NewEssayRepoMySQL(mysql.DB))
+	repo := repository.EssayRepo(repository.NewEssayRepoMySQL(repository.DB))
 	var err error
 	if globalDataAboutEssayList, err = repo.GetAll(); err != nil {
 		zap.L().Error("mysql.GetAllEssay(globalDataAboutEssayList) filed,err:", zap.Error(err))
 		return nil, err
 	}
 
-	if err := redis.GetEssayKeywords(globalDataAboutEssayList); err != nil {
+	if err := GetEssayKeywords(globalDataAboutEssayList); err != nil {
 		zap.L().Error("redis.GetEssayKeywords(globalDataAboutEssayList) filed,err:", zap.Error(err))
 		return nil, err
 	}

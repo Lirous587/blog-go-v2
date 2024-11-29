@@ -1,4 +1,4 @@
-package mysql
+package repository
 
 import (
 	"blog/pkg/snowflake"
@@ -87,7 +87,8 @@ func createUserTale() (err error) {
 	}
 
 	username := viper.GetString("manager.username")
-	password := encryptPassword(viper.GetString("manager.password"))
+	//password := encryptPassword(viper.GetString("manager.password"))
+	password := viper.GetString("manager.password")
 	email := viper.GetString("manager.email")
 	uid := snowflake.GenID()
 

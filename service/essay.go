@@ -2,7 +2,6 @@ package service
 
 import (
 	"blog/cache"
-	"blog/dao/redis"
 	"blog/models"
 	"blog/repository"
 	"blog/utils"
@@ -55,7 +54,7 @@ func (s *EssayRepoService) Update(data *models.EssayUpdateParams) (err error) {
 	idKeywords := new(models.EssayIdAndKeyword)
 	idKeywords.EssayId = data.ID
 	idKeywords.Keywords = data.Keywords
-	if err = redis.SetEssayKeyword(idKeywords); err != nil {
+	if err = cache.SetEssayKeyword(idKeywords); err != nil {
 		return
 	}
 	return
@@ -63,7 +62,7 @@ func (s *EssayRepoService) Update(data *models.EssayUpdateParams) (err error) {
 
 func (s *EssayRepoService) Delete(id int) (err error) {
 	//删除redis中文章的相关数据
-	if err = redis.DeleteEssay(id); err != nil {
+	if err = cache.DeleteEssay(id); err != nil {
 		return err
 	}
 	return s.repo.Delete(id)
@@ -77,9 +76,9 @@ func (s *EssayRepoService) GetList(q *models.EssayQuery) (data *models.EssayList
 func (s *EssayRepoService) GetListBySearch(p *models.SearchParam) (data *[]models.EssayData, err error) {
 	//判断是否需要添加访问值
 	if p.IfAdd {
-		preKey := redis.KeySearchKeyWordTimes
+		preKey := cache.KeySearchKeyWordTimes
 		// 向redis中加入keyWord
-		if err = redis.IncreaseSearchKeyword(preKey, (*p).Keyword); err != nil {
+		if err = cache.IncreaseSearchKeyword(preKey, (*p).Keyword); err != nil {
 			return nil, err
 		}
 	}

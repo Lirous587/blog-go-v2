@@ -1,16 +1,12 @@
 package ticker
 
 import (
-	"blog/dao/mysql"
-	"blog/dao/redis"
 	"go.uber.org/zap"
 	"sync"
 	"time"
 )
 
 const (
-	cleanInvalidToken       = time.Hour * 24
-	saveVisitedTimes        = time.Hour * 24
 	cleanLowFrequentKeyword = time.Hour * 24 * 30
 	taskCount               = 2
 )
@@ -58,28 +54,15 @@ func handleErrors() {
 	}
 }
 
-func cleanupInvalidTokensTask() error {
-	ticker := time.NewTicker(cleanInvalidToken)
-	defer ticker.Stop()
-	for range ticker.C {
-		// 清理过期的 token
-		err := mysql.CleanupInvalidTokens()
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func cleanLowFrequentKeywordTask() error {
 	ticker := time.NewTicker(cleanLowFrequentKeyword)
 	defer ticker.Stop()
-	for range ticker.C {
-		err := redis.CleanLowerKeywordsZsetEveryMonth()
-		if err != nil {
-			return err
-		}
-
-	}
+	//for range ticker.C {
+	//	err := redis.CleanLowerKeywordsZsetEveryMonth()
+	//	if err != nil {
+	//		return err
+	//	}
+	//
+	//}
 	return nil
 }

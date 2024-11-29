@@ -79,8 +79,9 @@ func SetupRouter(mode string) *gin.Engine {
 	{
 		// 上传图片
 		v3NoCache.POST("/uploadImg", controller.UploadImgHandler)
+
 		// 主页数据
-		v3NoCache.GET("/panel", controller.ResponseDataAboutManagerPanel)
+		//v3NoCache.GET("/panel", controller.ResponseDataAboutManagerPanel)
 
 		//heartWord
 		v3Cache.POST("/heartWords", heartWordsCtl.Create)
