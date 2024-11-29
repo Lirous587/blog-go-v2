@@ -81,7 +81,7 @@ func (r *HeartWordsRepoMySQL) GetList(query *models.HeartWordsQuery) (*models.He
 			errChan <- fmt.Errorf("getList failed, err: %w", err)
 			return
 		}
-		data.HeartWordsList = *list
+		data.HeartWordsList = list
 	}()
 
 	go func() {
@@ -113,13 +113,12 @@ func (r *HeartWordsRepoMySQL) GetCouldTypeList() (data []models.HeartWordsData, 
 		`SELECT h.id, h.content, h.source, h.img_id, h.if_could_type, g.img_url FROM heart_words h 
 			LEFT JOIN blog.gallery g ON h.img_id = g.id
 			WHERE h.if_could_type = 1`
-	err = r.db.Select(data, sqlStr)
+	err = r.db.Select(&data, sqlStr)
 	return
 }
 
-func (r *HeartWordsRepoMySQL) getList(whereClause string, args []interface{}) (list *[]models.HeartWordsData, err error) {
-	list = new([]models.HeartWordsData)
-	*list = make([]models.HeartWordsData, 0, 10)
+func (r *HeartWordsRepoMySQL) getList(whereClause string, args []interface{}) (list []models.HeartWordsData, err error) {
+	list = make([]models.HeartWordsData, 0, 10)
 	baseSelect := `
         SELECT h.id, h.content, h.source, h.img_id, h.if_could_type, g.img_url
         FROM heart_words h
@@ -129,7 +128,7 @@ func (r *HeartWordsRepoMySQL) getList(whereClause string, args []interface{}) (l
 
 	sqlStr := fmt.Sprintf("%s %s %s LIMIT ? OFFSET ?", baseSelect, whereClause, orderBy)
 
-	if err = r.db.Select(list, sqlStr, args...); err != nil {
+	if err = r.db.Select(&list, sqlStr, args...); err != nil {
 		return
 	}
 	return

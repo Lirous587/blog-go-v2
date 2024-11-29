@@ -49,6 +49,6 @@ func (r *EssayKindRepoMySQL) GetList() (list []models.EssayKindData, err error) 
 		LEFT JOIN essay e ON k.id = e.kind_id
 		GROUP BY k.id
 		`
-	err = r.db.Select(list, sqlStr)
+	err = r.db.Select(&list, sqlStr)
 	return
 }

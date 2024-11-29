@@ -3,7 +3,6 @@ package cache
 import (
 	"blog/models"
 	"fmt"
-	"github.com/go-redis/redis"
 	"strings"
 	"time"
 )
@@ -127,34 +126,4 @@ func getTopXFromZSet(key string, count int64) (models.RankListForZset, error) {
 		rankList.Y = append(rankList.Y, int(z.Score))
 	}
 	return rankList, nil
-}
-
-func CleanLowerZsetEveryMonth() error {
-	preKey := getRedisKey(KeySearchKeyWordTimes)
-	yearKey := fmt.Sprintf("%s%s:", preKey, year)
-
-	// 获取分数小于等于5的成员
-	lowFrequentMembers, err := client.ZRangeByScoreWithScores(yearKey, redis.ZRangeBy{
-		Min: "-inf",
-		Max: "5",
-	}).Result()
-
-	if err != nil {
-		return fmt.Errorf("failed to get members with score <= 5 from %s: %w", yearKey, err)
-	}
-
-	if len(lowFrequentMembers) > 0 {
-		// 提取成员名称
-		var membersToRemove []interface{}
-		for _, z := range lowFrequentMembers {
-			membersToRemove = append(membersToRemove, z.Member)
-		}
-
-		// 删除这些成员
-		if err = client.ZRem(yearKey, membersToRemove...).Err(); err != nil {
-			return fmt.Errorf("failed to remove low frequent members from %s: %w", yearKey, err)
-		}
-	}
-
-	return nil
 }

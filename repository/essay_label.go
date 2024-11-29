@@ -75,6 +75,6 @@ func (r *EssayLabelRepoMySQL) GetList() (data []models.EssayLabelData, err error
 			LEFT JOIN eid_lid el on l.id = el.label_id
 			GROUP BY l.id
 			`
-	err = r.db.Select(data, sqlStr)
+	err = r.db.Select(&data, sqlStr)
 	return
 }

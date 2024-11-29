@@ -33,11 +33,12 @@ func SetupRouter(mode string) *gin.Engine {
 	essayKindCtrl := InitEssayKindCtrl()
 	essayLabelCtrl := InitEssayLabelCtrl()
 	essayCtrl := InitEssayCtrl()
+	indexCtrl := InitIndexCtrl()
 
 	v0 := r.Group("/api/base")
 	v0.Use(middlewares.SaveUserIp())
 	{
-		v0.GET("/index", controller.ResponseIndexDataHandler)
+		v0.GET("/index", indexCtrl.GetData)
 	}
 
 	v1 := r.Group("/api/base")
@@ -56,7 +57,8 @@ func SetupRouter(mode string) *gin.Engine {
 	}
 
 	v3Cache := r.Group("/api/admin")
-	v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateDataMiddleware())
+	v3Cache.Use(middlewares.JWTAuthMiddleware())
+	//v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateDataMiddleware())
 	{
 		// essay
 		v3Cache.POST("/essay", essayCtrl.Create)

@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"blog/cache"
 	"blog/controller"
 	"blog/repository"
 	"blog/service"
@@ -64,4 +65,14 @@ func InitEssayCtrl() *controller.EssayCtrl {
 	ser = service.NewEssayRepoService(repo)
 	// 初始化控制器
 	return controller.NewEssayCtrl(ser)
+}
+
+func InitIndexCtrl() *controller.IndexCtrl {
+	// 初始化仓库和服务
+	var cch cache.IndexCache
+	cch = cache.NewIndexCacheRedis(cache.Rdb)
+	var ser service.IndexService
+	ser = service.NewIndexDataCacheService(cch)
+	// 初始化控制器
+	return controller.NewIndexCtrl(ser)
 }

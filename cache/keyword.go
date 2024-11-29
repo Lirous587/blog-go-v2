@@ -44,7 +44,6 @@ func IncreaseSearchKeyword(preKey string, keyword string) (err error) {
 	return SetYearMonthWeekTimesZoneForZset(preKey, keyword, defaultIncreaseCount)
 }
 
-// GetEssayKeywords 获取文章关键字
 func GetEssayKeywords(e []models.EssayData) (err error) {
 	keyPre := getRedisKey(KeyEssayKeyword)
 	for i := range e {
@@ -56,13 +55,4 @@ func GetEssayKeywords(e []models.EssayData) (err error) {
 		e[i].Keywords = append(keywords, e[i].Name)
 	}
 	return err
-}
-
-func GetSearchKeywordRank(rankKind *models.RankKindForZset) (err error) {
-	preKey := getRedisKey(KeySearchKeyWordTimes)
-	return GetYearMonthWeekTimesZoneForZsetRank(rankKind, preKey)
-}
-
-func CleanLowerKeywordsZsetEveryMonth() error {
-	return CleanLowerZsetEveryMonth()
 }

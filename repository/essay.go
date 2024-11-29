@@ -260,7 +260,7 @@ func (r *EssayRepoMySQL) GetRecommendList() (list []models.EssayData, err error)
 		ORDER BY e.id DESC 
 		LIMIT 5
 	`
-	err = r.db.Select(list, sqlStr)
+	err = r.db.Select(&list, sqlStr)
 	return
 }
 

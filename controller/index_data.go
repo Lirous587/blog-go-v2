@@ -1,13 +1,26 @@
 package controller
 
 import (
-	"blog/models"
 	"blog/service"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-func ResponseIndexDataHandler(c *gin.Context) {
-	var data = new(models.IndexData)
-	service.GetIndexData(&data)
-	ResponseSuccess(c, *data)
+type IndexCtrl struct {
+	service service.IndexService
+}
+
+func NewIndexCtrl(service service.IndexService) *IndexCtrl {
+	return &IndexCtrl{
+		service: service,
+	}
+}
+
+func (ctrl *IndexCtrl) GetData(c *gin.Context) {
+	data, err := ctrl.service.GetData()
+	if err != nil {
+		zap.L().Error("ctrl.service.GetData() failed", zap.Error(err))
+		return
+	}
+	ResponseSuccess(c, data)
 }
