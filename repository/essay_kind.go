@@ -9,7 +9,7 @@ type EssayKindRepo interface {
 	Create(data *models.EssayKindParam) error
 	Update(data *models.EssayKindUpdateParam) error
 	Delete(id int) error
-	GetList() (*[]models.EssayKindData, error)
+	GetList() ([]models.EssayKindData, error)
 }
 
 type EssayKindRepoMySQL struct {
@@ -40,9 +40,8 @@ func (r *EssayKindRepoMySQL) Update(data *models.EssayKindUpdateParam) error {
 	return err
 }
 
-func (r *EssayKindRepoMySQL) GetList() (list *[]models.EssayKindData, err error) {
-	list = new([]models.EssayKindData)
-	*list = make([]models.EssayKindData, 0, 10)
+func (r *EssayKindRepoMySQL) GetList() (list []models.EssayKindData, err error) {
+	list = make([]models.EssayKindData, 0, 10)
 	sqlStr := `
 	SELECT k.name,k.icon,k.id,k.introduction,
 	    COUNT(e.id) AS essay_count 

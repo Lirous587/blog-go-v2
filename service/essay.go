@@ -19,7 +19,7 @@ type EssayService interface {
 	Update(data *models.EssayUpdateParams) error
 	Delete(id int) error
 	GetList(q *models.EssayQuery) (*models.EssayListAndPage, error)
-	GetListBySearch(p *models.SearchParam) (*[]models.EssayData, error)
+	GetListBySearch(p *models.SearchParam) ([]models.EssayData, error)
 }
 
 type EssayRepoService struct {
@@ -73,7 +73,7 @@ func (s *EssayRepoService) GetList(q *models.EssayQuery) (data *models.EssayList
 	return
 }
 
-func (s *EssayRepoService) GetListBySearch(p *models.SearchParam) (data *[]models.EssayData, err error) {
+func (s *EssayRepoService) GetListBySearch(p *models.SearchParam) (data []models.EssayData, err error) {
 	//判断是否需要添加访问值
 	if p.IfAdd {
 		preKey := cache.KeySearchKeyWordTimes
@@ -82,14 +82,13 @@ func (s *EssayRepoService) GetListBySearch(p *models.SearchParam) (data *[]model
 			return nil, err
 		}
 	}
-	data = new([]models.EssayData)
-	var essayList = new([]models.EssayData)
-	essayList = cache.GetAllEssayList()
-	for _, essay := range *essayList {
+	data = make([]models.EssayData, 0, 5)
+	essayList := cache.GetAllEssayList()
+	for _, essay := range essayList {
 		// 检查 essay.keyword 数组中是否包含指定的关键字 k
 		for _, keyword := range essay.Keywords {
 			if strings.Contains(keyword, p.Keyword) {
-				*data = append(*data, essay)
+				data = append(data, essay)
 				break
 			}
 		}

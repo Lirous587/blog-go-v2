@@ -45,15 +45,15 @@ func IncreaseSearchKeyword(preKey string, keyword string) (err error) {
 }
 
 // GetEssayKeywords 获取文章关键字
-func GetEssayKeywords(e *[]models.EssayData) (err error) {
+func GetEssayKeywords(e []models.EssayData) (err error) {
 	keyPre := getRedisKey(KeyEssayKeyword)
-	for i := range *e {
-		key := fmt.Sprintf("%s%d", keyPre, (*e)[i].ID)
+	for i := range e {
+		key := fmt.Sprintf("%s%d", keyPre, e[i].ID)
 		keywords, err := client.SMembers(key).Result()
 		if err != nil {
 			return err
 		}
-		(*e)[i].Keywords = append(keywords, (*e)[i].Name)
+		e[i].Keywords = append(keywords, e[i].Name)
 	}
 	return err
 }

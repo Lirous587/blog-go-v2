@@ -20,8 +20,8 @@ type EssayRepo interface {
 	Update(data *models.EssayUpdateParams) error
 	Delete(id int) error
 	GetList(query *models.EssayQuery) (*models.EssayListAndPage, error)
-	GetRecommendList() (*[]models.EssayData, error)
-	GetAll() (*[]models.EssayData, error)
+	GetRecommendList() ([]models.EssayData, error)
+	GetAll() ([]models.EssayData, error)
 }
 
 type essayRawData struct {
@@ -88,11 +88,12 @@ func (r *EssayRepoMySQL) Read(id int) (*models.EssayData, error) {
 	}()
 	go func() {
 		defer wg.Done()
-		(*data).LabelList = make([]models.EssayLabelData, 0, 5)
-		if err := r.readLabels(&((*data).LabelList), data.ID); err != nil {
-			errChan <- fmt.Errorf("r.readLabels(&((*data).LabelList) failed,err:%w", err)
+		labelList, err := r.readLabels(data.ID)
+		if err != nil {
+			errChan <- fmt.Errorf("r.readLabels(data.ID) failed,err:%w", err)
 			return
 		}
+		data.LabelList = labelList
 	}()
 	go func() {
 		defer wg.Done()
@@ -212,7 +213,7 @@ func (r *EssayRepoMySQL) deleteEssay(tx *sqlx.Tx, eid int) (err error) {
 	return err
 }
 
-func (r *EssayRepoMySQL) GetAll() (list *[]models.EssayData, err error) {
+func (r *EssayRepoMySQL) GetAll() (list []models.EssayData, err error) {
 	sqlStr := `
 		SELECT e.id, e.name, e.created_time,e.visited_times,e.kind_id,e.introduction,e.if_top,e.if_recommend, e.img_id,g.img_url,
 		       k.name AS kind_name,
@@ -226,22 +227,20 @@ func (r *EssayRepoMySQL) GetAll() (list *[]models.EssayData, err error) {
 		GROUP BY e.id,g.img_url
 		ORDER BY e.id DESC
 	`
-
 	var rawDataList = new([]essayRawData)
 	if err = r.db.Select(rawDataList, sqlStr); err != nil {
 		return
 	}
-	list = new([]models.EssayData)
-	*list = make([]models.EssayData, len(*rawDataList))
+	list = make([]models.EssayData, len(*rawDataList))
 	for i, raw := range *rawDataList {
-		(*list)[i] = raw.EssayData
+		list[i] = raw.EssayData
 		if raw.LabelNames != "" && raw.LabelIDs != "" {
 			ids := strings.Split(raw.LabelIDs, ",")
 			names := strings.Split(raw.LabelNames, ",")
-			(*list)[i].LabelList = make([]models.EssayLabelData, len(ids))
+			list[i].LabelList = make([]models.EssayLabelData, len(ids))
 			for j := range ids {
 				id, _ := strconv.Atoi(ids[j])
-				(*list)[i].LabelList[j] = models.EssayLabelData{
+				list[i].LabelList[j] = models.EssayLabelData{
 					ID:   id,
 					Name: names[j],
 				}
@@ -251,9 +250,8 @@ func (r *EssayRepoMySQL) GetAll() (list *[]models.EssayData, err error) {
 	return
 }
 
-func (r *EssayRepoMySQL) GetRecommendList() (list *[]models.EssayData, err error) {
-	list = new([]models.EssayData)
-	*list = make([]models.EssayData, 0, 5)
+func (r *EssayRepoMySQL) GetRecommendList() (list []models.EssayData, err error) {
+	list = make([]models.EssayData, 0, 5)
 	sqlStr := `
 		SELECT e.id, e.name, e.created_time, g.img_url 
 		FROM essay e 

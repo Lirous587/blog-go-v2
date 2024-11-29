@@ -9,11 +9,11 @@ import (
 )
 
 var (
-	globalDataAboutEssayList = new([]models.EssayData)
+	globalDataAboutEssayList []models.EssayData
 	rwLockForEssayList       sync.RWMutex
 )
 
-func GetEssayListInit() (*[]models.EssayData, error) {
+func GetEssayListInit() ([]models.EssayData, error) {
 	rwLockForEssayList.Lock()
 	defer rwLockForEssayList.Unlock()
 	repo := repository.EssayRepo(repository.NewEssayRepoMySQL(repository.DB))
@@ -23,7 +23,7 @@ func GetEssayListInit() (*[]models.EssayData, error) {
 		return nil, err
 	}
 
-	if err := GetEssayKeywords(globalDataAboutEssayList); err != nil {
+	if err = GetEssayKeywords(globalDataAboutEssayList); err != nil {
 		zap.L().Error("redis.GetEssayKeywords(globalDataAboutEssayList) filed,err:", zap.Error(err))
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func GetEssayListInit() (*[]models.EssayData, error) {
 	return globalDataAboutEssayList, nil
 }
 
-func GetAllEssayList() *[]models.EssayData {
+func GetAllEssayList() []models.EssayData {
 	return globalDataAboutEssayList
 }
 

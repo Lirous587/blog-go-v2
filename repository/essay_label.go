@@ -10,7 +10,7 @@ type EssayLabelRepo interface {
 	Create(data *models.EssayLabelParam) error
 	Update(data *models.EssayLabelUpdateParam) error
 	Delete(id int) error
-	GetList() (*[]models.EssayLabelData, error)
+	GetList() ([]models.EssayLabelData, error)
 }
 
 type EssayLabelRepoMySQL struct {
@@ -66,9 +66,8 @@ func deleteLabelInEssayLabel(tx *sqlx.Tx, id int) error {
 	return err
 }
 
-func (r *EssayLabelRepoMySQL) GetList() (data *[]models.EssayLabelData, err error) {
-	data = new([]models.EssayLabelData)
-	*data = make([]models.EssayLabelData, 0, 10)
+func (r *EssayLabelRepoMySQL) GetList() (data []models.EssayLabelData, err error) {
+	data = make([]models.EssayLabelData, 0, 10)
 	sqlStr := `
 		SELECT l.name,l.id,l.introduction,
 		    COUNT(el.essay_id) AS essay_count 

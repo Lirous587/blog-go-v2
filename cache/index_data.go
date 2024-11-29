@@ -13,38 +13,36 @@ var (
 	globalDataAboutIndex = new(models.IndexData)
 )
 
-func refreshData(data *models.IndexData) (err error) {
-	var kindList = new([]models.EssayKindData)
+func refreshData(data *models.IndexData) error {
 	ekRepo := repository.EssayKindRepo(repository.NewEssayKindRepoMySQL(repository.DB))
-	kindList, err = ekRepo.GetList()
+	kindList, err := ekRepo.GetList()
 	if err != nil {
 		return err
 	}
 
-	var labelList = new([]models.EssayLabelData)
 	elRepo := repository.EssayLabelRepo(repository.NewEssayLabelRepoMySQL(repository.DB))
-	labelList, err = elRepo.GetList()
+	labelList, err := elRepo.GetList()
 	if err != nil {
 		return err
 	}
 
-	var essayList = new([]models.EssayData)
 	repo := repository.EssayRepo(repository.NewEssayRepoMySQL(repository.DB))
-	if essayList, err = repo.GetRecommendList(); err != nil {
+	essayList, err := repo.GetRecommendList()
+	if err != nil {
 		return err
 	}
 
-	var heartWordsList *[]models.HeartWordsData
 	hwRepo := repository.HeartWordsRepo(repository.NewHeartWordsRepoMySQL(repository.DB))
-	if heartWordsList, err = hwRepo.GetRecommendList(); err != nil {
+	heartWordsList, err := hwRepo.GetCouldTypeList()
+	if err != nil {
 		return err
 	}
 	//整合数据
-	data.KindList = *kindList
-	data.LabelList = *labelList
-	data.EssayList = *essayList
-	data.HeartWordsList = *heartWordsList
-	return
+	data.KindList = kindList
+	data.LabelList = labelList
+	data.EssayList = essayList
+	data.HeartWordsList = heartWordsList
+	return nil
 }
 
 func InitIndexData() error {

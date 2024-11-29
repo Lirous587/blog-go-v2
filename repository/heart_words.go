@@ -14,7 +14,7 @@ type HeartWordsRepo interface {
 	Update(data *models.HeartWordsUpdateParam) error
 	Delete(id int) error
 	GetList(query *models.HeartWordsQuery) (*models.HeartWordsListAndPage, error)
-	GetRecommendList() (*[]models.HeartWordsData, error)
+	GetCouldTypeList() ([]models.HeartWordsData, error)
 }
 
 type HeartWordsRepoMySQL struct {
@@ -107,8 +107,8 @@ func (r *HeartWordsRepoMySQL) GetList(query *models.HeartWordsQuery) (*models.He
 	return data, nil
 }
 
-func (r *HeartWordsRepoMySQL) GetRecommendList() (data *[]models.HeartWordsData, err error) {
-	data = new([]models.HeartWordsData)
+func (r *HeartWordsRepoMySQL) GetCouldTypeList() (data []models.HeartWordsData, err error) {
+	data = make([]models.HeartWordsData, 0, 10)
 	sqlStr :=
 		`SELECT h.id, h.content, h.source, h.img_id, h.if_could_type, g.img_url FROM heart_words h 
 			LEFT JOIN blog.gallery g ON h.img_id = g.id

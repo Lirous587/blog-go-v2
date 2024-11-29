@@ -44,14 +44,16 @@ func (r *EssayRepoMySQL) insertLabels(tx *sqlx.Tx, eid int, lIDs []int) error {
 	return nil
 }
 
-func (r *EssayRepoMySQL) readLabels(data *[]models.EssayLabelData, eid int) error {
+func (r *EssayRepoMySQL) readLabels(eid int) (data []models.EssayLabelData, err error) {
+	data = make([]models.EssayLabelData, 0, 10)
 	sqlStr := `
 		SELECT el.label_id AS id ,l.name as name
 		FROM eid_lid el
 		LEFT OUTER JOIN e_label l on l.id = el.label_id
 		WHERE essay_id = ?
 		`
-	return r.db.Select(data, sqlStr, eid)
+	err = r.db.Select(&data, sqlStr, eid)
+	return
 }
 
 func (r *EssayRepoMySQL) updateLabel(tx *sqlx.Tx, eid int, oLabelIds []int, labelIds []int) error {
