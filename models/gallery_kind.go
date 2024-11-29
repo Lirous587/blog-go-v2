@@ -15,11 +15,11 @@ type GalleryKindUpdateParams struct {
 }
 
 type GalleryKindQuery struct {
-	Page     int `query:"page" form:"page"`
-	PageSize int `query:"page_size" form:"page_size"`
+	Page     int `form:"page"`
+	PageSize int `form:"pageSize"`
 }
 
 type GalleryKindList struct {
 	List       []GalleryKindData `json:"list"`
-	TotalPages int               `json:"total_pages"`
+	TotalPages int               `json:"totalPages"`
 }

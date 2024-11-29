@@ -4,3 +4,6 @@
 {"level":"ERROR","time":"2024-11-28T19:02:22.583+0800","caller":"controller/gallery.go:25","msg":"c.ShouldBindJSON(data) failed","error":"Key: 'GalleryData.ImgUrl' Error:Field validation for 'ImgUrl' failed on the 'required' tag"}
 {"level":"ERROR","time":"2024-11-28T19:03:14.815+0800","caller":"controller/gallery.go:25","msg":"c.ShouldBindJSON(data) failed","error":"Key: 'GalleryData.ImgUrl' Error:Field validation for 'ImgUrl' failed on the 'required' tag"}
 {"level":"ERROR","time":"2024-11-28T19:25:31.023+0800","caller":"controller/heart_words.go:92","msg":"ctrl.service.GetList(query) failed","error":"getList failed, err: expected slice but got ptr"}
+{"level":"ERROR","time":"2024-11-29T19:41:03.262+0800","caller":"controller/heart_words.go:85","msg":"c.ShouldBindQuery(query) failed","error":"Key: 'HeartWordsQuery.PageSize' Error:Field validation for 'PageSize' failed on the 'required' tag"}
+{"level":"ERROR","time":"2024-11-29T19:56:22.128+0800","caller":"controller/essay_label.go:25","msg":"c.ShouldBindJSON(data) failed","error":"Key: 'EssayLabelParam.ID' Error:Field validation for 'ID' failed on the 'required' tag"}
+{"level":"ERROR","time":"2024-11-29T19:57:40.802+0800","caller":"controller/essay.go:31","msg":"ctrl.service.Create(data) failed","error":"无效的标签"}

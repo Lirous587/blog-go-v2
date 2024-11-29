@@ -42,9 +42,9 @@ func SetupRouter(mode string) *gin.Engine {
 
 	v1 := r.Group("/api/base")
 	{
-		v1.GET("/essay_list", essayCtrl.GetList)
-		v1.GET("/essay_content", essayCtrl.Read)
-		v1.GET("/heartWords_list", heartWordsCtl.GetList)
+		v1.GET("/essayList", essayCtrl.GetList)
+		v1.GET("/essayContent", essayCtrl.Read)
+		v1.GET("/heartWordsList", heartWordsCtl.GetList)
 	}
 
 	v2 := r.Group("/api/admin")
@@ -88,13 +88,13 @@ func SetupRouter(mode string) *gin.Engine {
 		v3Cache.PUT("/heartWords", heartWordsCtl.Update)
 
 		//gallery
-		v3NoCache.GET("/gallery_list", galleryCtl.GetList)
+		v3NoCache.GET("/galleryList", galleryCtl.GetList)
 		v3NoCache.POST("/gallery", galleryCtl.Create)
 		v3NoCache.DELETE("/gallery", galleryCtl.Delete)
 		v3NoCache.PUT("/gallery", galleryCtl.Update)
 
 		//galleryKind
-		v3NoCache.GET("/galleryKind_list", galleryKindCtl.GetList)
+		v3NoCache.GET("/galleryKindList", galleryKindCtl.GetList)
 		v3NoCache.POST("/galleryKind", galleryKindCtl.Create)
 		v3NoCache.DELETE("/galleryKind", galleryKindCtl.Delete)
 		v3NoCache.PUT("/galleryKind", galleryKindCtl.Update)

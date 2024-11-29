@@ -1,8 +1,8 @@
 package models
 
 type Panel struct {
-	IpSet    UserIpForSet    `json:"ip_set"`
-	RankZset RankKindForZset `json:"rank_zset"`
+	IpSet    UserIpForSet    `json:"ipSet"`
+	RankZset RankKindForZset `json:"rankZset"`
 }
 
 type UserIpForSet struct {

@@ -66,7 +66,7 @@ func (s *EssayRepoService) Delete(id int) (err error) {
 	if err = redis.DeleteEssay(id); err != nil {
 		return err
 	}
-	return
+	return s.repo.Delete(id)
 }
 
 func (s *EssayRepoService) GetList(q *models.EssayQuery) (data *models.EssayListAndPage, err error) {

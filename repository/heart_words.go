@@ -91,7 +91,7 @@ func (r *HeartWordsRepoMySQL) GetList(query *models.HeartWordsQuery) (*models.He
 			errChan <- fmt.Errorf("getList failed, err: %w", err)
 			return
 		}
-		data.TotalPages = (totalCount + query.PageSize - 1) / query.Page
+		data.TotalPages = (totalCount + query.PageSize - 1) / query.PageSize
 	}()
 
 	wg.Wait()
