@@ -6,9 +6,9 @@ type EssayData struct {
 	Introduction  string           `json:"introduction,omitempty" db:"introduction"`
 	CreatedTime   string           `json:"createdTime" db:"created_time"`
 	Content       string           `json:"content,omitempty" db:"content"`
+	Keywords      string           `json:"keywords" db:"keywords"`
 	VisitedTimes  int64            `json:"visitedTimes,omitempty" db:"visited_times"`
 	LabelList     []EssayLabelData `json:"labelList,omitempty"`
-	Keywords      []string         `json:"keywords,omitempty"`
 	NearEssayList []EssayData      `json:"nearEssayList,omitempty"`
 	Img           `json:"img"`
 	ID            int  `json:"id" db:"id"`
@@ -18,12 +18,12 @@ type EssayData struct {
 }
 
 type EssayParams struct {
-	Name         string   `json:"name" binding:"required" db:"name"`
-	Introduction string   `json:"introduction" binding:"required" db:"introduction"`
-	CreatedTime  string   `json:"createdTime" db:"created_time"`
-	Content      string   `json:"content" binding:"required" db:"content"`
-	LabelIds     []int    `json:"labelIds" bind:"required"`
-	Keywords     []string `json:"keywords"`
+	Name         string `json:"name" binding:"required" db:"name"`
+	Introduction string `json:"introduction" binding:"required" db:"introduction"`
+	CreatedTime  string `json:"createdTime" db:"created_time"`
+	Content      string `json:"content" binding:"required" db:"content"`
+	Keywords     string `json:"keywords" binding:"required" db:"keywords"`
+	LabelIds     []int  `json:"labelIds" bind:"required"`
 	Img          `json:"img" binding:"required"`
 	KindID       int  `json:"kindID" binding:"required" db:"kind_id"`
 	IfTop        bool `json:"ifTop" binging:"required" db:"if_top"`
@@ -38,22 +38,17 @@ type EssayUpdateParams struct {
 
 type EssayQuery struct {
 	Page     int `json:"page" form:"page"`
-	PageSize int `json:"pageSize" form:"page_size"`
-	LabelID  int `json:"labelID" form:"label_id"`
-	KindID   int `json:"kindID" form:"kind_id"`
+	PageSize int `json:"pageSize" form:"pageSize"`
+	LabelID  int `json:"labelID" form:"labelID"`
+	KindID   int `json:"kindID" form:"kindID"`
 }
 
 type EssayListAndPage struct {
-	EssayList  []EssayData `json:"essayList,omitempty"`
+	EssayList  []EssayData `json:"list,omitempty"`
 	TotalPages int         `json:"totalPages,omitempty"`
 }
 
 type SearchParam struct {
 	Keyword string `json:"keyword" binging:"required"`
 	IfAdd   bool   `json:"ifAdd"`
-}
-
-type EssayIdAndKeyword struct {
-	Keywords []string `json:"keywords"`
-	EssayId  int      `json:"id" binging:"required"`
 }

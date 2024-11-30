@@ -3,6 +3,9 @@ package service
 import (
 	"blog/cache"
 	"blog/models"
+	"blog/repository"
+	"errors"
+	"github.com/go-redis/redis"
 )
 
 type IndexService interface {
@@ -11,23 +14,31 @@ type IndexService interface {
 
 type IndexCacheService struct {
 	cache cache.IndexCache
+	repo  repository.IndexRepo
 }
 
-func NewIndexDataCacheService(cache cache.IndexCache) *IndexCacheService {
+func NewIndexDataCacheService(cache cache.IndexCache, repo repository.IndexRepo) *IndexCacheService {
 	return &IndexCacheService{
 		cache: cache,
+		repo:  repo,
 	}
 }
 
-func (c *IndexCacheService) GetData() (*models.IndexData, error) {
+func (s *IndexCacheService) GetData() (data *models.IndexData, err error) {
 	// 先从redis里面查
-	data, err := c.cache.GetData()
+	data, err = s.cache.GetData()
 	if err != nil {
+		if !errors.Is(err, redis.Nil) {
+			return
+		}
 		// 没数据再从mysql里面查
-		data, err = c.cache.GetDataFromRepo()
+		data, err = s.repo.GetData()
 		if err != nil {
-			return nil, err
+			return
+		}
+		if err = s.cache.SaveData(data); err != nil {
+			return
 		}
 	}
-	return data, nil
+	return
 }

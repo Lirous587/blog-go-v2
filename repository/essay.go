@@ -41,7 +41,7 @@ func NewEssayRepoMySQL(db *sqlx.DB) *EssayRepoMySQL {
 	}
 }
 
-func (r *EssayRepoMySQL) Create(data *models.EssayParams) (err error) {
+func (r *EssayRepoMySQL) Create(data *models.EssayParams) error {
 	return newSqlxTx(r.db, func(tx *sqlx.Tx) error {
 		result, err := r.insertEssay(tx, data)
 		if err != nil {
@@ -61,14 +61,12 @@ func (r *EssayRepoMySQL) Create(data *models.EssayParams) (err error) {
 
 func (r *EssayRepoMySQL) insertEssay(tx *sqlx.Tx, p *models.EssayParams) (sql.Result, error) {
 	sqlStr := `
-        INSERT INTO essay(name, kind_id, if_top, content, if_recommend, introduction, created_time, img_id,visited_times) 
-        VALUES (:name, :kind_id, :if_top, :content, :if_recommend, :introduction, :created_time, :img_id,1)
+        INSERT INTO essay(name, kind_id, if_top, content, if_recommend, introduction, created_time, img_id,keywords) 
+        VALUES (:name, :kind_id, :if_top, :content, :if_recommend, :introduction, :created_time,:img_id,:keywords)
     `
 	result, err := tx.NamedExec(sqlStr, p)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
+
+	return result, err
 }
 
 func (r *EssayRepoMySQL) Read(id int) (*models.EssayData, error) {
@@ -124,7 +122,7 @@ func (r *EssayRepoMySQL) Read(id int) (*models.EssayData, error) {
 
 func (r *EssayRepoMySQL) readEssay(data *models.EssayData) error {
 	sqlStr := `
-		SELECT e.id,e.name,e.kind_id, e.content, e.introduction,e.img_id, e.created_time, e.visited_times,g.img_url,
+		SELECT e.id,e.name,e.kind_id, e.content, e.introduction,e.img_id, e.created_time, e.visited_times, e.keywords,g.img_url,
 			k.name AS kind_name
 		FROM essay e
 		LEFT JOIN blog.gallery g on g.id = e.img_id
@@ -187,7 +185,8 @@ func (r *EssayRepoMySQL) updateEssay(tx *sqlx.Tx, data *models.EssayUpdateParams
                content = :content,
                img_id = :img_id,
                if_top = :if_top,
-               if_recommend = :if_recommend
+               if_recommend = :if_recommend,
+               keywords = :keywords
                WHERE id = :id`
 	_, err := tx.NamedExec(sqlStr, data)
 	return err
@@ -300,7 +299,7 @@ func (r *EssayRepoMySQL) GetList(query *models.EssayQuery) (*models.EssayListAnd
 			errChan <- fmt.Errorf("getList failed,err:%w", err)
 			return
 		}
-		data.EssayList = *list
+		data.EssayList = list
 	}()
 
 	go func() {
@@ -326,12 +325,11 @@ func (r *EssayRepoMySQL) GetList(query *models.EssayQuery) (*models.EssayListAnd
 	return data, nil
 }
 
-func (r *EssayRepoMySQL) getEssayList(whereClause string, args []interface{}) (*[]models.EssayData, error) {
-	list := new([]models.EssayData)
-	*list = make([]models.EssayData, 0, 5)
+func (r *EssayRepoMySQL) getEssayList(whereClause string, args []interface{}) (list []models.EssayData, err error) {
+	list = make([]models.EssayData, 0, 5)
 	rawDataList := make([]essayRawData, 0, 5)
 	baseSelect := `
-     SELECT e.id, e.name, e.kind_id, e.if_recommend, e.if_top, e.introduction,
+     SELECT e.id, e.name, e.kind_id, e.if_recommend, e.if_top, e.introduction,e.keywords,
         e.created_time, e.visited_times,e.img_id,g.img_url,
         k.name AS kind_name,
         COALESCE(GROUP_CONCAT(el.label_id), '') AS label_ids,
@@ -356,20 +354,19 @@ func (r *EssayRepoMySQL) getEssayList(whereClause string, args []interface{}) (*
 	}
 
 	// 处理查询结果
-	list = new([]models.EssayData)
-	*list = make([]models.EssayData, len(rawDataList))
+	list = make([]models.EssayData, len(rawDataList))
 	for i, raw := range rawDataList {
-		(*list)[i] = raw.EssayData
+		list[i] = raw.EssayData
 		// 处理标签数据
 		if raw.LabelIDs != "" && raw.LabelNames != "" {
 			ids := strings.Split(raw.LabelIDs, ",")
 			names := strings.Split(raw.LabelNames, ",")
 			introduction := strings.Split(raw.LabelIntroduction, ",")
-			(*list)[i].LabelList = make([]models.EssayLabelData, len(ids))
+			list[i].LabelList = make([]models.EssayLabelData, len(ids))
 
 			for j := range ids {
 				id, _ := strconv.Atoi(ids[j])
-				(*list)[i].LabelList[j] = models.EssayLabelData{
+				list[i].LabelList[j] = models.EssayLabelData{
 					ID:           id,
 					Name:         names[j],
 					Introduction: introduction[j],

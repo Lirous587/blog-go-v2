@@ -6,7 +6,6 @@ import (
 	"blog/repository"
 	"blog/utils"
 	"fmt"
-	"strings"
 )
 
 const (
@@ -51,12 +50,6 @@ func (s *EssayRepoService) Update(data *models.EssayUpdateParams) (err error) {
 	if err = s.repo.Update(data); err != nil {
 		return
 	}
-	idKeywords := new(models.EssayIdAndKeyword)
-	idKeywords.EssayId = data.ID
-	idKeywords.Keywords = data.Keywords
-	if err = cache.SetEssayKeyword(idKeywords); err != nil {
-		return
-	}
 	return
 }
 
@@ -74,24 +67,16 @@ func (s *EssayRepoService) GetList(q *models.EssayQuery) (data *models.EssayList
 }
 
 func (s *EssayRepoService) GetListBySearch(p *models.SearchParam) (data []models.EssayData, err error) {
-	//判断是否需要添加访问值
-	if p.IfAdd {
-		preKey := cache.KeySearchKeyWordTimes
-		// 向redis中加入keyWord
-		if err = cache.IncreaseSearchKeyword(preKey, (*p).Keyword); err != nil {
-			return nil, err
-		}
-	}
-	data = make([]models.EssayData, 0, 5)
-	essayList := cache.GetAllEssayList()
-	for _, essay := range essayList {
-		// 检查 essay.keyword 数组中是否包含指定的关键字 k
-		for _, keyword := range essay.Keywords {
-			if strings.Contains(keyword, p.Keyword) {
-				data = append(data, essay)
-				break
-			}
-		}
-	}
+	//data = make([]models.EssayData, 0, 5)
+	//essayList := cache.GetAllEssayList()
+	//for _, essay := range essayList {
+	//	// 检查 essay.keyword 数组中是否包含指定的关键字 k
+	//	for _, keyword := range essay.Keywords {
+	//		if strings.Contains(keyword, p.Keyword) {
+	//			data = append(data, essay)
+	//			break
+	//		}
+	//	}
+	//}
 	return
 }

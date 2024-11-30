@@ -72,7 +72,9 @@ func InitIndexCtrl() *controller.IndexCtrl {
 	var cch cache.IndexCache
 	cch = cache.NewIndexCacheRedis(cache.Rdb)
 	var ser service.IndexService
-	ser = service.NewIndexDataCacheService(cch)
+	var repo repository.IndexRepo
+	repo = repository.NewIndexRepoMySql(repository.DB)
+	ser = service.NewIndexDataCacheService(cch, repo)
 	// 初始化控制器
 	return controller.NewIndexCtrl(ser)
 }

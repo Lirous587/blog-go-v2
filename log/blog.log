@@ -14,3 +14,8 @@
 {"level":"ERROR","time":"2024-11-29T23:07:42.112+0800","caller":"controller/index_data.go:29","msg":"ctrl.service.GetData() failed","error":"redis: nil"}
 {"level":"ERROR","time":"2024-11-29T23:09:17.455+0800","caller":"controller/index_data.go:29","msg":"ctrl.service.GetData() failed","error":"must pass a pointer, not a value, to StructScan destination"}
 {"level":"ERROR","time":"2024-11-29T23:12:53.839+0800","caller":"controller/index_data.go:29","msg":"ctrl.service.GetData() failed","error":"ERR invalid expire time in 'set' command"}
+{"level":"ERROR","time":"2024-11-30T20:39:43.833+0800","caller":"controller/essay.go:25","msg":"c.ShouldBindJSON(data) failed","error":"Key: 'EssayParams.KindID' Error:Field validation for 'KindID' failed on the 'required' tag"}
+{"level":"ERROR","time":"2024-11-30T20:40:07.338+0800","caller":"controller/essay.go:31","msg":"ctrl.service.Create(data) failed","error":"r.insert(tx, data) failed: sql: converting argument $1 type: unsupported type models.EssayParams, a struct"}
+{"level":"ERROR","time":"2024-11-30T20:40:50.691+0800","caller":"controller/essay.go:31","msg":"ctrl.service.Create(data) failed","error":"r.insert(tx, data) failed: sql: converting argument $1 type: unsupported type models.EssayParams, a struct"}
+{"level":"ERROR","time":"2024-11-30T20:41:23.162+0800","caller":"controller/essay.go:31","msg":"ctrl.service.Create(data) failed","error":"r.insert(tx, data) failed: sql: converting argument $1 type: unsupported type models.EssayParams, a struct"}
+{"level":"ERROR","time":"2024-11-30T20:41:34.051+0800","caller":"controller/essay.go:31","msg":"ctrl.service.Create(data) failed","error":"r.insert(tx, data) failed: sql: converting argument $1 type: unsupported type models.EssayParams, a struct"}
