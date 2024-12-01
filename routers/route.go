@@ -81,28 +81,32 @@ func SetupRouter(mode string) *gin.Engine {
 		v3.PUT("/galleryKind", galleryKindCtl.Update)
 	}
 
-	v3Cache := r.Group("/api/admin")
-	v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateIndexMiddleware(indexCtrl))
+	v3Index := r.Group("/api/admin")
+	v3Index.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateIndexMiddleware(indexCtrl))
 	{
 		// kind
-		v3Cache.POST("/kind", essayKindCtrl.Create)
-		v3Cache.DELETE("/kind", essayKindCtrl.Delete)
-		v3Cache.PUT("/kind", essayKindCtrl.Update)
+		v3Index.POST("/kind", essayKindCtrl.Create)
+		v3Index.DELETE("/kind", essayKindCtrl.Delete)
+		v3Index.PUT("/kind", essayKindCtrl.Update)
 
 		// label
-		v3Cache.POST("/label", essayLabelCtrl.Create)
-		v3Cache.DELETE("label", essayLabelCtrl.Delete)
-		v3Cache.PUT("/label", essayLabelCtrl.Update)
+		v3Index.POST("/label", essayLabelCtrl.Create)
+		v3Index.DELETE("label", essayLabelCtrl.Delete)
+		v3Index.PUT("/label", essayLabelCtrl.Update)
 
 		//heartWord
-		v3Cache.POST("/heartWords", heartWordsCtl.Create)
-		v3Cache.DELETE("/heartWords", heartWordsCtl.Delete)
-		v3Cache.PUT("/heartWords", heartWordsCtl.Update)
+		v3Index.POST("/heartWords", heartWordsCtl.Create)
+		v3Index.DELETE("/heartWords", heartWordsCtl.Delete)
+		v3Index.PUT("/heartWords", heartWordsCtl.Update)
+	}
 
+	v3Essay := r.Group("/api/admin")
+	v3Essay.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateIndexMiddleware(indexCtrl), middlewares.UpdateEssayDescMiddleware(essayCtrl))
+	{
 		// essay
-		v3Cache.POST("/essay", essayCtrl.Create)
-		v3Cache.DELETE("/essay", essayCtrl.Delete)
-		v3Cache.PUT("/essay", essayCtrl.Update)
+		v3Essay.POST("/essay", essayCtrl.Create)
+		v3Essay.DELETE("/essay", essayCtrl.Delete)
+		v3Essay.PUT("/essay", essayCtrl.Update)
 	}
 
 	r.NoRoute(func(c *gin.Context) {

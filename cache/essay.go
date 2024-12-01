@@ -10,6 +10,7 @@ import (
 type EssayCache interface {
 	GetDesc() ([]models.EssayDesc, error)
 	SaveDesc([]models.EssayDesc) error
+	DeleteDesc() error
 }
 
 type EssayCacheRedis struct {
@@ -58,5 +59,11 @@ func (cch *EssayCacheRedis) SaveDesc(data []models.EssayDesc) error {
 		pipe.HSet(key, strconv.Itoa(item.ID), jsonData)
 	}
 	_, err := pipe.Exec()
+	return err
+}
+
+func (cch *EssayCacheRedis) DeleteDesc() error {
+	key := getRedisKey(KeyEssayKeyword)
+	_, err := cch.rdb.Del(key).Result()
 	return err
 }

@@ -24,6 +24,7 @@ type EssayService interface {
 	Delete(id int) error
 	GetList(q *models.EssayQuery) (*models.EssayListAndPage, error)
 	GetListBySearch(p *models.SearchParam) ([]models.EssayDesc, error)
+	UpdateDescCache() error
 }
 
 type EssayRepoService struct {
@@ -103,4 +104,18 @@ func (s *EssayRepoService) getAllDesc() ([]models.EssayDesc, error) {
 		return list, nil
 	}
 	return list, nil
+}
+
+func (s *EssayRepoService) UpdateDescCache() error {
+	// 删除cch
+	if err := s.cch.DeleteDesc(); err != nil {
+		return err
+	}
+	// 从repo读取
+	data, err := s.repo.GetAllDesc()
+	if err != nil {
+		return err
+	}
+	// 保存到cch
+	return s.cch.SaveDesc(data)
 }

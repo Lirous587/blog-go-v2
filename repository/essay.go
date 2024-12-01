@@ -207,7 +207,7 @@ func (r *EssayRepoMySQL) deleteEssay(tx *sqlx.Tx, eid int) (err error) {
 func (r *EssayRepoMySQL) GetRecommendList() (list []models.EssayData, err error) {
 	list = make([]models.EssayData, 0, 5)
 	sqlStr := `
-		SELECT e.id, e.name, e.created_time, g.img_url,e.if_top,e.if_recommend
+		SELECT e.id, e.name, e.created_time, g.img_url,e.if_top,e.if_recommend,e.introduction
 		FROM essay e 
 		JOIN blog.gallery g on e.img_id = g.id
 		WHERE if_recommend = 1

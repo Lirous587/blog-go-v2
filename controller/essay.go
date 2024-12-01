@@ -139,3 +139,11 @@ func (ctrl *EssayCtrl) GetListBySearch(c *gin.Context) {
 	//3.返回响应
 	ResponseSuccess(c, essayList)
 }
+
+func (ctrl *EssayCtrl) UpdateDescCache() error {
+	err := ctrl.service.UpdateDescCache()
+	if err != nil {
+		zap.L().Error("ctrl.service.Update() failed", zap.Error(err))
+	}
+	return err
+}
