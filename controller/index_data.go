@@ -24,3 +24,11 @@ func (ctrl *IndexCtrl) GetData(c *gin.Context) {
 	}
 	ResponseSuccess(c, data)
 }
+
+func (ctrl *IndexCtrl) Update() error {
+	err := ctrl.service.Update()
+	if err != nil {
+		zap.L().Error("ctrl.service.Update() failed", zap.Error(err))
+	}
+	return err
+}

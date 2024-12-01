@@ -1,31 +1,17 @@
 package middlewares
 
 import (
+	"blog/controller"
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateDataMiddleware() gin.HandlerFunc {
+func UpdateDataMiddleware(indexCtrl *controller.IndexCtrl) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 在请求被处理之前，不做任何事情
-		// 调用下一个中间件或处理函数
-		c.Next()
-		//var wg sync.WaitGroup
-		//wg.Add(2)
-		//errChan := make(chan error, 2)
-		//go func() {
-		//	errChan <- cache.UpdateIndexData()
-		//	wg.Done()
-		//}()
-		//go func() {
-		//	errChan <- cache.UpdateDataAboutEssayList()
-		//	wg.Done()
-		//}()
-		//wg.Wait()
-		//close(errChan)
-		//for err := range errChan {
-		//	if err != nil {
-		//		zap.L().Error("cache update happen error,err:", zap.Error(err))
-		//	}
-		//}
+		c.Next() // 先执行后续操作
+		if err := indexCtrl.Update(); err != nil {
+			// 处理更新错误
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
 	}
 }

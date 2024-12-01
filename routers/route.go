@@ -45,6 +45,7 @@ func SetupRouter(mode string) *gin.Engine {
 	{
 		v1.GET("/essayList", essayCtrl.GetList)
 		v1.GET("/essayContent", essayCtrl.Read)
+		v1.GET("/search", essayCtrl.GetListBySearch)
 		v1.GET("/heartWordsList", heartWordsCtl.GetList)
 	}
 
@@ -58,7 +59,7 @@ func SetupRouter(mode string) *gin.Engine {
 
 	v3Cache := r.Group("/api/admin")
 	v3Cache.Use(middlewares.JWTAuthMiddleware())
-	//v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateDataMiddleware())
+	v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateDataMiddleware(indexCtrl))
 	{
 		// essay
 		v3Cache.POST("/essay", essayCtrl.Create)
@@ -101,11 +102,6 @@ func SetupRouter(mode string) *gin.Engine {
 		v3NoCache.POST("/galleryKind", galleryKindCtl.Create)
 		v3NoCache.DELETE("/galleryKind", galleryKindCtl.Delete)
 		v3NoCache.PUT("/galleryKind", galleryKindCtl.Update)
-	}
-
-	v4 := r.Group("/api/keyword")
-	{
-		v4.POST("/search", essayCtrl.GetListBySearch)
 	}
 
 	r.NoRoute(func(c *gin.Context) {

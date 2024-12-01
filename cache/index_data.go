@@ -4,12 +4,14 @@ import (
 	"blog/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/go-redis/redis"
 )
 
 type IndexCache interface {
 	GetData() (*models.IndexData, error)
 	SaveData(data *models.IndexData) error
+	Clean() error
 }
 
 type IndexCacheRedis struct {
@@ -46,4 +48,12 @@ func (cch *IndexCacheRedis) SaveData(data *models.IndexData) error {
 	}
 	err = cch.rdb.Set(key, string(serializedData), 0).Err()
 	return err
+}
+
+func (cch *IndexCacheRedis) Clean() error {
+	key := getRedisKey(KeyIndex)
+	if _, err := cch.rdb.Del(key).Result(); err != nil {
+		return fmt.Errorf("cch.rdb.Del(key).Result() failed,err:%w", err)
+	}
+	return nil
 }

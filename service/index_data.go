@@ -10,6 +10,7 @@ import (
 
 type IndexService interface {
 	GetData() (*models.IndexData, error)
+	Update() error
 }
 
 type IndexCacheService struct {
@@ -39,6 +40,23 @@ func (s *IndexCacheService) GetData() (data *models.IndexData, err error) {
 		if err = s.cache.SaveData(data); err != nil {
 			return
 		}
+	}
+	return
+}
+
+func (s *IndexCacheService) Update() (err error) {
+	// 先清除redis的值
+	if err = s.cache.Clean(); err != nil {
+		return
+	}
+	// 从mysql里面查
+	data, err := s.repo.GetData()
+	if err != nil {
+		return
+	}
+	// 保存到redis里
+	if err = s.cache.SaveData(data); err != nil {
+		return err
 	}
 	return
 }
