@@ -59,10 +59,12 @@ func InitEssayLabelCtrl() *controller.EssayLabelCtrl {
 
 func InitEssayCtrl() *controller.EssayCtrl {
 	// 初始化仓库和服务
+	var cch cache.EssayCache
+	cch = cache.NewEssayCacheRedis(cache.Rdb)
 	var repo repository.EssayRepo
 	repo = repository.NewEssayRepoMySQL(repository.DB)
 	var ser service.EssayService
-	ser = service.NewEssayRepoService(repo)
+	ser = service.NewEssayRepoService(cch, repo)
 	// 初始化控制器
 	return controller.NewEssayCtrl(ser)
 }

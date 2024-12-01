@@ -1,20 +1,13 @@
 package models
 
 type EssayData struct {
-	Name          string           `json:"name" db:"name"`
+	EssayParams
+	Img           `json:"img"`
 	KindName      string           `json:"kindName,omitempty" db:"kind_name"`
-	Introduction  string           `json:"introduction,omitempty" db:"introduction"`
-	CreatedTime   string           `json:"createdTime" db:"created_time"`
-	Content       string           `json:"content,omitempty" db:"content"`
-	Keywords      string           `json:"keywords" db:"keywords"`
-	VisitedTimes  int64            `json:"visitedTimes,omitempty" db:"visited_times"`
 	LabelList     []EssayLabelData `json:"labelList,omitempty"`
 	NearEssayList []EssayData      `json:"nearEssayList,omitempty"`
-	Img           `json:"img"`
-	ID            int  `json:"id" db:"id"`
-	KindID        int  `json:"kindID,omitempty" db:"kind_id"`
-	IfRecommend   bool `json:"ifRecommend" db:"if_recommend"`
-	IfTop         bool `json:"ifTop" db:"if_top"`
+	VisitedTimes  int64            `json:"visitedTimes,omitempty" db:"visited_times"`
+	ID            int              `json:"id" db:"id"`
 }
 
 type EssayParams struct {
@@ -51,4 +44,19 @@ type EssayListAndPage struct {
 type SearchParam struct {
 	Keyword string `json:"keyword" binging:"required"`
 	IfAdd   bool   `json:"ifAdd"`
+}
+
+type EssayDesc struct {
+	Name         string           `json:"name" db:"name"`
+	KindName     string           `json:"kindName,omitempty" db:"kind_name"`
+	Introduction string           `json:"introduction,omitempty" db:"introduction"`
+	CreatedTime  string           `json:"createdTime" db:"created_time"`
+	VisitedTimes int64            `json:"visitedTimes,omitempty" db:"visited_times"`
+	Keywords     string           `json:"keywords"`
+	LabelList    []EssayLabelData `json:"labelList,omitempty"`
+	Img          `json:"img"`
+	ID           int  `json:"id" db:"id"`
+	KindID       int  `json:"kindID,omitempty" db:"kind_id"`
+	IfRecommend  bool `json:"ifRecommend" db:"if_recommend"`
+	IfTop        bool `json:"ifTop" db:"if_top"`
 }

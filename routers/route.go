@@ -46,7 +46,7 @@ func SetupRouter(mode string) *gin.Engine {
 	{
 		v1.GET("/essayList", essayCtrl.GetList)
 		v1.GET("/essayContent", essayCtrl.Read)
-		v1.GET("/search", essayCtrl.GetListBySearch)
+		v1.POST("/essaySearch", essayCtrl.GetListBySearch)
 		v1.GET("/heartWordsList", heartWordsCtl.GetList)
 	}
 

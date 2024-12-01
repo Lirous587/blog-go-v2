@@ -2,7 +2,7 @@ package models
 
 type EssayLabelData struct {
 	Name         string `json:"name" db:"name"`
-	Introduction string `json:"introduction" db:"introduction"`
+	Introduction string `json:"introduction,omitempty" db:"introduction"`
 	ID           int    `json:"id" db:"id"`
 	EssayCount   int8   `json:"essayCount,omitempty" db:"essay_count"`
 }

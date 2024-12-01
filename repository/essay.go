@@ -21,14 +21,7 @@ type EssayRepo interface {
 	Delete(id int) error
 	GetList(query *models.EssayQuery) (*models.EssayListAndPage, error)
 	GetRecommendList() ([]models.EssayData, error)
-	GetAll() ([]models.EssayData, error)
-}
-
-type essayRawData struct {
-	models.EssayData
-	LabelIDs          string `db:"label_ids"`
-	LabelNames        string `db:"label_names"`
-	LabelIntroduction string `db:"label_introduction"`
+	GetAllDesc() ([]models.EssayDesc, error)
 }
 
 type EssayRepoMySQL struct {
@@ -192,7 +185,6 @@ func (r *EssayRepoMySQL) updateEssay(tx *sqlx.Tx, data *models.EssayUpdateParams
 	return err
 }
 
-// Delete essay中删除数据 e_label中删除数据
 func (r *EssayRepoMySQL) Delete(id int) (err error) {
 	return newSqlxTx(r.db, func(tx *sqlx.Tx) error {
 		if err := r.deleteLabels(tx, id); err != nil {
@@ -210,43 +202,6 @@ func (r *EssayRepoMySQL) deleteEssay(tx *sqlx.Tx, eid int) (err error) {
 	sqlStr := `DELETE FROM essay WHERE id = ?`
 	_, err = tx.Exec(sqlStr, eid)
 	return err
-}
-
-func (r *EssayRepoMySQL) GetAll() (list []models.EssayData, err error) {
-	sqlStr := `
-		SELECT e.id, e.name, e.created_time,e.visited_times,e.kind_id,e.introduction,e.if_top,e.if_recommend, e.img_id,g.img_url,
-		       k.name AS kind_name,
-		    COALESCE(GROUP_CONCAT(el.label_id), '') AS label_ids,
-            COALESCE(GROUP_CONCAT(l.name), '') AS label_names
-		FROM essay e
-		LEFT JOIN e_kind k ON e.kind_id = k.id
-		LEFT JOIN eid_lid el ON e.id = el.essay_id
-		LEFT JOIN e_label l ON l.id = el.label_id
-		LEFT JOIN gallery g on g.id = e.img_id	
-		GROUP BY e.id,g.img_url
-		ORDER BY e.id DESC
-	`
-	var rawDataList = new([]essayRawData)
-	if err = r.db.Select(rawDataList, sqlStr); err != nil {
-		return
-	}
-	list = make([]models.EssayData, len(*rawDataList))
-	for i, raw := range *rawDataList {
-		list[i] = raw.EssayData
-		if raw.LabelNames != "" && raw.LabelIDs != "" {
-			ids := strings.Split(raw.LabelIDs, ",")
-			names := strings.Split(raw.LabelNames, ",")
-			list[i].LabelList = make([]models.EssayLabelData, len(ids))
-			for j := range ids {
-				id, _ := strconv.Atoi(ids[j])
-				list[i].LabelList[j] = models.EssayLabelData{
-					ID:   id,
-					Name: names[j],
-				}
-			}
-		}
-	}
-	return
 }
 
 func (r *EssayRepoMySQL) GetRecommendList() (list []models.EssayData, err error) {
@@ -327,7 +282,14 @@ func (r *EssayRepoMySQL) GetList(query *models.EssayQuery) (*models.EssayListAnd
 
 func (r *EssayRepoMySQL) getEssayList(whereClause string, args []interface{}) (list []models.EssayData, err error) {
 	list = make([]models.EssayData, 0, 5)
-	rawDataList := make([]essayRawData, 0, 5)
+
+	rawDataList := make([]struct {
+		models.EssayData
+		LabelIDs          string `db:"label_ids"`
+		LabelNames        string `db:"label_names"`
+		LabelIntroduction string `db:"label_introduction"`
+	}, 0, 5)
+
 	baseSelect := `
      SELECT e.id, e.name, e.kind_id, e.if_recommend, e.if_top, e.introduction,e.keywords,
         e.created_time, e.visited_times,e.img_id,g.img_url,
@@ -388,6 +350,49 @@ func (r *EssayRepoMySQL) getEssayCount(whereClause string, args []interface{}) (
 	sqlStr := fmt.Sprintf("%s %s", baseSql, whereClause)
 	if err = r.db.Get(&totalCount, sqlStr, args[:len(args)-2]...); err != nil {
 		return
+	}
+	return
+}
+
+func (r *EssayRepoMySQL) GetAllDesc() (list []models.EssayDesc, err error) {
+	sqlStr := `
+		SELECT e.id, e.name, e.created_time,e.visited_times,e.kind_id,e.introduction,e.if_top,e.if_recommend,e.img_id,e.keywords,g.img_url,
+		       k.name AS kind_name,
+		    COALESCE(GROUP_CONCAT(el.label_id), '') AS label_ids,
+            COALESCE(GROUP_CONCAT(l.name), '') AS label_names
+		FROM essay e
+		LEFT JOIN e_kind k ON e.kind_id = k.id
+		LEFT JOIN eid_lid el ON e.id = el.essay_id
+		LEFT JOIN e_label l ON l.id = el.label_id
+		LEFT JOIN gallery g on g.id = e.img_id
+		GROUP BY e.id,g.img_url
+		ORDER BY e.id DESC
+	`
+	rawDataList := make([]struct {
+		models.EssayDesc
+		LabelIDs          string `db:"label_ids"`
+		LabelNames        string `db:"label_names"`
+		LabelIntroduction string `db:"label_introduction"`
+	}, 0, 5)
+
+	if err = r.db.Select(&rawDataList, sqlStr); err != nil {
+		return
+	}
+	list = make([]models.EssayDesc, len(rawDataList))
+	for i, raw := range rawDataList {
+		list[i] = raw.EssayDesc
+		if raw.LabelNames != "" && raw.LabelIDs != "" {
+			ids := strings.Split(raw.LabelIDs, ",")
+			names := strings.Split(raw.LabelNames, ",")
+			list[i].LabelList = make([]models.EssayLabelData, len(ids))
+			for j := range ids {
+				id, _ := strconv.Atoi(ids[j])
+				list[i].LabelList[j] = models.EssayLabelData{
+					ID:   id,
+					Name: names[j],
+				}
+			}
+		}
 	}
 	return
 }
