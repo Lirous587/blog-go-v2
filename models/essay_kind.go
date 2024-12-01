@@ -15,8 +15,6 @@ type EssayKindParam struct {
 }
 
 type EssayKindUpdateParam struct {
-	Name         string `json:"name" binding:"required" db:"name"`
-	Icon         string `json:"icon" binding:"required" db:"icon"`
-	Introduction string `json:"introduction" binding:"required" db:"introduction"`
-	ID           int    `json:"id" binding:"required" db:"id"`
+	ID int `json:"id" binding:"required" db:"id"`
+	EssayKindParam
 }

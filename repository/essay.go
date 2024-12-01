@@ -103,7 +103,7 @@ func (r *EssayRepoMySQL) Read(id int) (*models.EssayData, error) {
 	go func() {
 		defer wg.Done()
 		nearByEssay := make([]models.EssayData, 0, 5)
-		if err := r.getNearbyEssays(&nearByEssay, data.KindID, data.ID); err != nil {
+		if err := r.getNearbyEssays(nearByEssay, data.KindID, data.ID); err != nil {
 			errChan <- fmt.Errorf("increaseEssayCount failed,err:%w", err)
 			return
 		}
@@ -140,7 +140,7 @@ func (r *EssayRepoMySQL) addVisitedTimes(id int) error {
 	return err
 }
 
-func (r *EssayRepoMySQL) getNearbyEssays(data *[]models.EssayData, kID int, eID int) error {
+func (r *EssayRepoMySQL) getNearbyEssays(data []models.EssayData, kID int, eID int) error {
 	sqlStr := `
 		(SELECT e.id, e.name, e.kind_id, e.introduction, e.created_time, g.img_url,e.visited_times,
 		 	k.name AS kind_name
@@ -160,7 +160,7 @@ func (r *EssayRepoMySQL) getNearbyEssays(data *[]models.EssayData, kID int, eID 
 			ORDER BY e.id
 		LIMIT 2)
   `
-	return r.db.Select(data, sqlStr, kID, eID, kID, eID)
+	return r.db.Select(&data, sqlStr, kID, eID, kID, eID)
 }
 
 func (r *EssayRepoMySQL) Update(data *models.EssayUpdateParams) error {
@@ -252,10 +252,10 @@ func (r *EssayRepoMySQL) GetAll() (list []models.EssayData, err error) {
 func (r *EssayRepoMySQL) GetRecommendList() (list []models.EssayData, err error) {
 	list = make([]models.EssayData, 0, 5)
 	sqlStr := `
-		SELECT e.id, e.name, e.created_time, g.img_url 
+		SELECT e.id, e.name, e.created_time, g.img_url,e.if_top,e.if_recommend
 		FROM essay e 
 		JOIN blog.gallery g on e.img_id = g.id
-		WHERE if_recommend = true
+		WHERE if_recommend = 1
 		ORDER BY e.id DESC 
 		LIMIT 5
 	`

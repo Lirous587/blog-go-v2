@@ -57,51 +57,51 @@ func SetupRouter(mode string) *gin.Engine {
 		//v2.POST("/updateUserMsg", middlewares.JWTAuthMiddleware(), controller.UpdateUserMsgHandler)
 	}
 
-	v3Cache := r.Group("/api/admin")
-	v3Cache.Use(middlewares.JWTAuthMiddleware())
-	v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateDataMiddleware(indexCtrl))
+	v3 := r.Group("/api/admin")
+	v3.Use(middlewares.JWTAuthMiddleware())
+
 	{
-		// essay
-		v3Cache.POST("/essay", essayCtrl.Create)
-		v3Cache.DELETE("/essay", essayCtrl.Delete)
-		v3Cache.PUT("/essay", essayCtrl.Update)
+		// 上传图片
+		v3.POST("/uploadImg", controller.UploadImgHandler)
+
+		// 主页数据
+		//v3NoCache.GET("/panel", controller.ResponseDataAboutManagerPanel)
+
+		//gallery
+		v3.GET("/galleryList", galleryCtl.GetList)
+		v3.POST("/gallery", galleryCtl.Create)
+		v3.DELETE("/gallery", galleryCtl.Delete)
+		v3.PUT("/gallery", galleryCtl.Update)
+
+		//galleryKind
+		v3.GET("/galleryKindList", galleryKindCtl.GetList)
+		v3.POST("/galleryKind", galleryKindCtl.Create)
+		v3.DELETE("/galleryKind", galleryKindCtl.Delete)
+		v3.PUT("/galleryKind", galleryKindCtl.Update)
+	}
+
+	v3Cache := r.Group("/api/admin")
+	v3Cache.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateIndexMiddleware(indexCtrl))
+	{
+		// kind
+		v3Cache.POST("/kind", essayKindCtrl.Create)
+		v3Cache.DELETE("/kind", essayKindCtrl.Delete)
+		v3Cache.PUT("/kind", essayKindCtrl.Update)
 
 		// label
 		v3Cache.POST("/label", essayLabelCtrl.Create)
 		v3Cache.DELETE("label", essayLabelCtrl.Delete)
 		v3Cache.PUT("/label", essayLabelCtrl.Update)
 
-		// kind
-		v3Cache.POST("/kind", essayKindCtrl.Create)
-		v3Cache.DELETE("/kind", essayKindCtrl.Delete)
-		v3Cache.PUT("/kind", essayKindCtrl.Update)
-	}
-
-	v3NoCache := r.Group("/api/admin")
-	v3NoCache.Use(middlewares.JWTAuthMiddleware())
-	{
-		// 上传图片
-		v3NoCache.POST("/uploadImg", controller.UploadImgHandler)
-
-		// 主页数据
-		//v3NoCache.GET("/panel", controller.ResponseDataAboutManagerPanel)
-
 		//heartWord
 		v3Cache.POST("/heartWords", heartWordsCtl.Create)
 		v3Cache.DELETE("/heartWords", heartWordsCtl.Delete)
 		v3Cache.PUT("/heartWords", heartWordsCtl.Update)
 
-		//gallery
-		v3NoCache.GET("/galleryList", galleryCtl.GetList)
-		v3NoCache.POST("/gallery", galleryCtl.Create)
-		v3NoCache.DELETE("/gallery", galleryCtl.Delete)
-		v3NoCache.PUT("/gallery", galleryCtl.Update)
-
-		//galleryKind
-		v3NoCache.GET("/galleryKindList", galleryKindCtl.GetList)
-		v3NoCache.POST("/galleryKind", galleryKindCtl.Create)
-		v3NoCache.DELETE("/galleryKind", galleryKindCtl.Delete)
-		v3NoCache.PUT("/galleryKind", galleryKindCtl.Update)
+		// essay
+		v3Cache.POST("/essay", essayCtrl.Create)
+		v3Cache.DELETE("/essay", essayCtrl.Delete)
+		v3Cache.PUT("/essay", essayCtrl.Update)
 	}
 
 	r.NoRoute(func(c *gin.Context) {

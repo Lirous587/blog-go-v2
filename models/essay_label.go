@@ -10,11 +10,9 @@ type EssayLabelData struct {
 type EssayLabelParam struct {
 	Name         string `json:"name" binding:"required" db:"name"`
 	Introduction string `json:"introduction" binding:"required" db:"introduction"`
-	ID           int    `json:"id" db:"id"`
 }
 
 type EssayLabelUpdateParam struct {
-	Name         string `json:"name" binding:"required" db:"name"`
-	Introduction string `json:"introduction" binding:"required" db:"introduction"`
-	ID           int    `json:"id"  binding:"required" db:"id"`
+	ID int `json:"id"  binding:"required" db:"id"`
+	EssayLabelParam
 }

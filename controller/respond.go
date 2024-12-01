@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -48,7 +49,10 @@ func ResponseError(c *gin.Context, code codes) {
 		Msg:  code.Msg(),
 		Data: nil,
 	}
-	c.JSON(http.StatusInternalServerError, rd)
+	// 将错误添加到上下文的错误列表中
+	_ = c.Error(fmt.Errorf("%v", rd))
+	// 返回错误响应并停止后续处理
+	c.AbortWithStatusJSON(http.StatusInternalServerError, rd)
 }
 
 func ResponseSuccess(c *gin.Context, data interface{}) {
