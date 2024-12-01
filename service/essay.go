@@ -1,7 +1,6 @@
 package service
 
 import (
-	"blog/cache"
 	"blog/models"
 	"blog/repository"
 	"blog/utils"
@@ -54,10 +53,6 @@ func (s *EssayRepoService) Update(data *models.EssayUpdateParams) (err error) {
 }
 
 func (s *EssayRepoService) Delete(id int) (err error) {
-	//删除redis中文章的相关数据
-	if err = cache.DeleteEssay(id); err != nil {
-		return err
-	}
 	return s.repo.Delete(id)
 }
 

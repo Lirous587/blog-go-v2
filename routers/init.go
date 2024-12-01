@@ -78,3 +78,10 @@ func InitIndexCtrl() *controller.IndexCtrl {
 	// 初始化控制器
 	return controller.NewIndexCtrl(ser)
 }
+
+func InitImgCtrl() *controller.ImgCtrl {
+	var ser service.ImgService
+	ser = service.NewImgLocalService()
+	// 初始化控制器
+	return controller.NewImgCtrl(ser)
+}

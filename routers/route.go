@@ -34,6 +34,7 @@ func SetupRouter(mode string) *gin.Engine {
 	essayLabelCtrl := InitEssayLabelCtrl()
 	essayCtrl := InitEssayCtrl()
 	indexCtrl := InitIndexCtrl()
+	imgCtrl := InitImgCtrl()
 
 	v0 := r.Group("/api/base")
 	v0.Use(middlewares.SaveUserIp())
@@ -62,7 +63,7 @@ func SetupRouter(mode string) *gin.Engine {
 
 	{
 		// 上传图片
-		v3.POST("/uploadImg", controller.UploadImgHandler)
+		v3.POST("/uploadImg", imgCtrl.Upload)
 
 		// 主页数据
 		//v3NoCache.GET("/panel", controller.ResponseDataAboutManagerPanel)
