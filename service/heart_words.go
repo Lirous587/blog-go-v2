@@ -23,22 +23,22 @@ func NewHeartWordsRepoService(repo repository.HeartWordsRepo) *HeartWordsRepoSer
 	}
 }
 
-func (h *HeartWordsRepoService) Create(data *models.HeartWordsParam) error {
-	return h.repo.Create(data)
+func (s *HeartWordsRepoService) Create(data *models.HeartWordsParam) error {
+	return s.repo.Create(data)
 }
 
-func (h *HeartWordsRepoService) Read(id int) (data *models.HeartWordsData, err error) {
-	return h.repo.Read(id)
+func (s *HeartWordsRepoService) Read(id int) (data *models.HeartWordsData, err error) {
+	return s.repo.Read(id)
 }
 
-func (h *HeartWordsRepoService) Update(data *models.HeartWordsUpdateParam) error {
-	return h.repo.Update(data)
+func (s *HeartWordsRepoService) Update(data *models.HeartWordsUpdateParam) error {
+	return s.repo.Update(data)
 }
 
-func (h *HeartWordsRepoService) Delete(id int) error {
-	return h.repo.Delete(id)
+func (s *HeartWordsRepoService) Delete(id int) error {
+	return s.repo.Delete(id)
 }
 
-func (h *HeartWordsRepoService) GetList(query *models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
-	return h.repo.GetList(query)
+func (s *HeartWordsRepoService) GetList(query *models.HeartWordsQuery) (data *models.HeartWordsListAndPage, err error) {
+	return s.repo.GetList(query)
 }

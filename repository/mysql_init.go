@@ -10,9 +10,7 @@ import (
 
 var db *sqlx.DB
 
-var DB *sqlx.DB
-
-func Init() (err error) {
+func MysqlInit() (*sqlx.DB, error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True",
 		viper.GetString("mysql.username"),
 		viper.GetString("mysql.password"),
@@ -20,14 +18,13 @@ func Init() (err error) {
 		viper.GetInt("mysql.port"),
 		viper.GetString("mysql.dbname"),
 	)
-	//MustConnect--> 如果没有连接上就panic掉
+	var err error
 	db, err = sqlx.Connect("mysql", dsn)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	db.SetMaxOpenConns(viper.GetInt("mysql.max_open_con"))
 	db.SetMaxIdleConns(viper.GetInt("mysql.max_idle_con"))
-	DB = db
 	/*
 		//建表操作
 		if err = createUserTale(); err != nil {
@@ -55,7 +52,7 @@ func Init() (err error) {
 			return err
 		}
 	*/
-	return
+	return db, nil
 }
 
 func createUserTale() (err error) {
@@ -100,7 +97,7 @@ func createUserTale() (err error) {
 
 func createInvalidToken() (err error) {
 	sqlStr := `CREATE TABLE IF NOT EXISTS tokenInvalid(
-    id INT AUTO_INCREMENT PRIMARY KEY,
+   id INT AUTO_INCREMENT PRIMARY KEY,
 	token text NOT NULL,
 	expiration  INT NOT NULL)`
 	_, err = db.Exec(sqlStr)
@@ -141,24 +138,24 @@ func createEssayTable() (err error) {
 		ifRecommend BOOL NOT NULL DEFAULT FALSE,
 		ifTop BOOL NOT NULL  DEFAULT FALSE,
 		FOREIGN KEY (kind_id) REFERENCES kind(id)
-            ON DELETE RESTRICT
-            ON UPDATE CASCADE
-    )`
+           ON DELETE RESTRICT
+           ON UPDATE CASCADE
+   )`
 	_, err = db.Exec(sqlStr)
 	return err
 }
 
 func createEssayLabelTable() (err error) {
 	sqlStr := `CREATE TABLE IF NOT EXISTS essay_label(
-    essay_id INT NOT NULL PRIMARY KEY,
-    label_id INT NOT NULL PRIMARY KEY,
-    FOREIGN KEY (essay_id) REFERENCES essay(id)
-        	ON DELETE RESTRICT
-            ON UPDATE CASCADE,
-    FOREIGN KEY (label_id) REFERENCES label(id)  
-        	ON DELETE RESTRICT
-            ON UPDATE CASCADE
-    )`
+   essay_id INT NOT NULL PRIMARY KEY,
+   label_id INT NOT NULL PRIMARY KEY,
+   FOREIGN KEY (essay_id) REFERENCES essay(id)
+       	ON DELETE RESTRICT
+           ON UPDATE CASCADE,
+   FOREIGN KEY (label_id) REFERENCES label(id)  
+       	ON DELETE RESTRICT
+           ON UPDATE CASCADE
+   )`
 	_, err = db.Exec(sqlStr)
 	return err
 }

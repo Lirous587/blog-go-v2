@@ -8,6 +8,8 @@ import (
 )
 
 func SetupRouter(mode string) *gin.Engine {
+	Init()
+
 	if mode == gin.ReleaseMode {
 		gin.SetMode(gin.ReleaseMode)
 	}

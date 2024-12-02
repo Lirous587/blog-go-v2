@@ -23,22 +23,22 @@ func NewGalleryKindRepoService(repo repository.GalleryKindRepo) *GalleryKindRepo
 	}
 }
 
-func (h *GalleryKindRepoService) Create(data *models.GalleryKindParams) error {
-	return h.repo.Create(data)
+func (s *GalleryKindRepoService) Create(data *models.GalleryKindParams) error {
+	return s.repo.Create(data)
 }
 
-func (h *GalleryKindRepoService) Read(id int) (data *models.GalleryKindData, err error) {
-	return h.repo.Read(id)
+func (s *GalleryKindRepoService) Read(id int) (data *models.GalleryKindData, err error) {
+	return s.repo.Read(id)
 }
 
-func (h *GalleryKindRepoService) Update(data *models.GalleryKindUpdateParams) error {
-	return h.repo.Update(data)
+func (s *GalleryKindRepoService) Update(data *models.GalleryKindUpdateParams) error {
+	return s.repo.Update(data)
 }
 
-func (h *GalleryKindRepoService) Delete(id int) error {
-	return h.repo.Delete(id)
+func (s *GalleryKindRepoService) Delete(id int) error {
+	return s.repo.Delete(id)
 }
 
-func (h *GalleryKindRepoService) GetList() (data *models.GalleryKindList, err error) {
-	return h.repo.GetList()
+func (s *GalleryKindRepoService) GetList() (data *models.GalleryKindList, err error) {
+	return s.repo.GetList()
 }

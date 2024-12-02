@@ -15,20 +15,20 @@ type EssayKindRepoService struct {
 	repo repository.EssayKindRepo
 }
 
-func NewEssayKindRepoService(repo repository.EssayKindRepo) EssayKindRepoService {
-	return EssayKindRepoService{
+func NewEssayKindRepoService(repo repository.EssayKindRepo) *EssayKindRepoService {
+	return &EssayKindRepoService{
 		repo: repo,
 	}
 }
 
-func (s EssayKindRepoService) Create(data *models.EssayKindParam) error {
+func (s *EssayKindRepoService) Create(data *models.EssayKindParam) error {
 	return s.repo.Create(data)
 }
 
-func (s EssayKindRepoService) Update(data *models.EssayKindUpdateParam) error {
+func (s *EssayKindRepoService) Update(data *models.EssayKindUpdateParam) error {
 	return s.repo.Update(data)
 }
 
-func (s EssayKindRepoService) Delete(id int) error {
+func (s *EssayKindRepoService) Delete(id int) error {
 	return s.repo.Delete(id)
 }

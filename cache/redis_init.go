@@ -9,9 +9,7 @@ import (
 
 var client *redis.Client
 
-var Rdb *redis.Client
-
-func Init() (err error) {
+func RedisInit() (*redis.Client, error) {
 	client = redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d",
 			viper.GetString("redis.host"),
@@ -21,12 +19,10 @@ func Init() (err error) {
 		DB:       viper.GetInt("redis.db"),
 		PoolSize: viper.GetInt("redis.pool_size"),
 	})
-	_, err = client.Ping().Result()
-	if err != nil {
-		return err
+	if _, err := client.Ping().Result(); err != nil {
+		return nil, err
 	}
-	Rdb = client
-	return nil
+	return client, nil
 }
 
 func Close() {

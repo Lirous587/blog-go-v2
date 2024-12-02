@@ -1,0 +1,7 @@
+{"level":"ERROR","time":"2024-12-01T16:52:17.050+0800","caller":"controller/index_data.go:22","msg":"ctrl.service.GetData() failed","error":"unexpected end of JSON input"}
+{"level":"ERROR","time":"2024-12-01T17:11:06.113+0800","caller":"controller/index_data.go:22","msg":"ctrl.service.GetData() failed","error":"unexpected end of JSON input"}
+{"level":"ERROR","time":"2024-12-01T17:11:11.129+0800","caller":"controller/index_data.go:22","msg":"ctrl.service.GetData() failed","error":"unexpected end of JSON input"}
+{"level":"ERROR","time":"2024-12-01T17:11:11.959+0800","caller":"controller/index_data.go:22","msg":"ctrl.service.GetData() failed","error":"unexpected end of JSON input"}
+{"level":"ERROR","time":"2024-12-01T17:11:16.976+0800","caller":"controller/index_data.go:22","msg":"ctrl.service.GetData() failed","error":"unexpected end of JSON input"}
+{"level":"ERROR","time":"2024-12-01T17:11:20.516+0800","caller":"controller/index_data.go:22","msg":"ctrl.service.GetData() failed","error":"unexpected end of JSON input"}
+{"level":"ERROR","time":"2024-12-01T17:11:25.540+0800","caller":"controller/index_data.go:22","msg":"ctrl.service.GetData() failed","error":"unexpected end of JSON input"}
