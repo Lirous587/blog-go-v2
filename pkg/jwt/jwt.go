@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"blog/models"
 	"errors"
 	"time"
 
@@ -11,7 +10,7 @@ import (
 
 // MyClaims 自定义声明结构体并内嵌 jwt.RegisteredClaims
 type MyClaims struct {
-	UserID int64 `json:"user_id"`
+	uid int64
 	jwt.RegisteredClaims
 }
 
@@ -23,11 +22,11 @@ func init() {
 }
 
 // GenToken 生成JWT
-func GenToken(u *models.User) (string, error) {
+func GenToken(uid int64) (string, error) {
 	expirationTime := time.Now().Add(time.Duration(viper.GetInt("auth.jwt_expire")) * time.Hour)
 
 	claims := &MyClaims{
-		UserID: u.UserID,
+		uid: uid,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

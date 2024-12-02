@@ -107,9 +107,11 @@ func InitImgCtrl() *controller.ImgCtrl {
 	return controller.NewImgCtrl(ser)
 }
 
-func InitUserCtrl() *controller.ImgCtrl {
-	var ser service.ImgService
-	ser = service.NewImgLocalService()
+func InitUserCtrl() *controller.UserCtrl {
+	var ser service.UsrService
+	var repo repository.UserRepo
+	repo = repository.NewUserRepoMySQL(db)
+	ser = service.NewUserRepoService(repo)
 	// 初始化控制器
-	return controller.NewImgCtrl(ser)
+	return controller.NewUserCtrl(ser)
 }

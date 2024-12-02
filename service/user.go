@@ -5,52 +5,77 @@ import (
 	"blog/pkg/jwt"
 	"blog/pkg/snowflake"
 	"blog/repository"
+	"blog/utils"
+	"fmt"
 )
 
-func Signup(p *models.UserParams) (err error) {
-	//1.判断用户是否存在 --> 判断username和email
-	if err = repository.CheckUserExist(p.Username, p.Email); err != nil {
-		return err
-	}
-	//2.生成uid并保存相关信息
-	uid := snowflake.GenID()
-	user := models.User{
-		UserID:   uid,
-		Username: p.Username,
-		Password: p.Password,
-		Email:    p.Email,
-		Token:    "",
-	}
-	//3.将用户储存在数据库
-	return repository.InsertUser(&user)
+const (
+	userExisted = "用户已存在"
+)
+
+type UsrService interface {
+	Signup(data *models.UserSignupParams) error
+	Login(data *models.UserLoginParams) (*models.UserData, error)
+	Update(data *models.UserUpdateParams) error
+	Logout(data *models.UserLogoutParams) error
 }
 
-func Login(u *models.User) (err error) {
-	//1.判断账号密码是否正确
-	if err = repository.Login(u); err != nil {
-		return err
-	}
-	//2. jwt生成token
-	var token string
-	if token, err = jwt.GenToken(u); err != nil {
-		return err
-	}
-	//将token保存
-	u.Token = token
-	return nil
+type UserRepoService struct {
+	repo repository.UserRepo
 }
 
-func Logout(token string) error {
-	//1.得到token还剩余的时间
-	MyClaims, err := jwt.ParseToken(token)
+func NewUserRepoService(repo repository.UserRepo) *UserRepoService {
+	return &UserRepoService{
+		repo: repo,
+	}
+}
+
+func (s *UserRepoService) Signup(data *models.UserSignupParams) error {
+	//1.判断用户是否存在
+	ok, err := s.repo.CheckExist(data)
 	if err != nil {
 		return err
 	}
-	//2.将该token储存在数据库中
-	return repository.Logout(token, MyClaims.ExpiresAt.Unix())
+	if ok {
+		return fmt.Errorf(userExisted)
+	}
+	//2.生成uid并保存相关信息
+	uid := snowflake.GenID()
+	encryptedPassword := utils.EncryptPassword(data.Password)
+	user := &models.UserData{
+		UID:      uid,
+		Name:     data.Name,
+		Email:    data.Email,
+		Password: encryptedPassword,
+	}
+	//3.将用户储存在数据库
+	return s.repo.Save(user)
 }
 
-func UpdateUserMsg(user *models.UserParams, id int64) error {
-	//从数据库中修改数据
-	return repository.UpdateUserMsg(user, id)
+func (s *UserRepoService) Login(data *models.UserLoginParams) (*models.UserData, error) {
+	encryptedPassword := utils.EncryptPassword(data.Password)
+	data.Password = encryptedPassword
+	// 身份校验
+	ret, err := s.repo.Validate(data)
+	if err != nil {
+		return nil, err
+	}
+	// jwt生成token
+	var token string
+	if token, err = jwt.GenToken(ret.UID); err != nil {
+		return nil, err
+	}
+	//将token保存
+	ret.Token = token
+	return ret, nil
+}
+
+func (s *UserRepoService) Update(user *models.UserUpdateParams) error {
+	////从数据库中修改数据
+	//return repository.UpdateUserMsg(user, id)
+	return nil
+}
+
+func (s *UserRepoService) Logout(token *models.UserLogoutParams) error {
+	return nil
 }

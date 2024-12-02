@@ -5,3 +5,10 @@
 {"level":"ERROR","time":"2024-12-01T17:11:16.976+0800","caller":"controller/index_data.go:22","msg":"ctrl.service.GetData() failed","error":"unexpected end of JSON input"}
 {"level":"ERROR","time":"2024-12-01T17:11:20.516+0800","caller":"controller/index_data.go:22","msg":"ctrl.service.GetData() failed","error":"unexpected end of JSON input"}
 {"level":"ERROR","time":"2024-12-01T17:11:25.540+0800","caller":"controller/index_data.go:22","msg":"ctrl.service.GetData() failed","error":"unexpected end of JSON input"}
+{"level":"ERROR","time":"2024-12-02T23:12:40.109+0800","caller":"controller/user.go:55","msg":"ctrl.service.Login(data) failed","error":"missing destination name id in *models.UserData"}
+{"level":"ERROR","time":"2024-12-02T23:14:20.368+0800","caller":"controller/user.go:55","msg":"ctrl.service.Login(data) failed","error":"用户身份验证失败"}
+{"level":"ERROR","time":"2024-12-02T23:15:19.868+0800","caller":"controller/user.go:55","msg":"ctrl.service.Login(data) failed","error":"用户身份验证失败"}
+{"level":"ERROR","time":"2024-12-02T23:17:07.471+0800","caller":"controller/user.go:30","msg":"c.ShouldBindJSON(data) failed","error":"Key: 'UserSignupParams.RePassword' Error:Field validation for 'RePassword' failed on the 'eqfield' tag"}
+{"level":"ERROR","time":"2024-12-02T23:17:24.730+0800","caller":"controller/user.go:36","msg":"ctrl.service.Signup(data) failed","error":"用户已存在"}
+{"level":"ERROR","time":"2024-12-02T23:17:41.989+0800","caller":"controller/user.go:36","msg":"ctrl.service.Signup(data) failed","error":"sql: converting argument $1 type: unsupported type models.UserData, a struct"}
+{"level":"ERROR","time":"2024-12-02T23:21:44.558+0800","caller":"controller/user.go:48","msg":"c.ShouldBindJSON(data) failed","error":"invalid character '}' looking for beginning of object key string"}

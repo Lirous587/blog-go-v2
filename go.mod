@@ -4,13 +4,13 @@ go 1.22.2
 
 require (
 	github.com/bwmarrin/snowflake v0.3.0
-	github.com/fsnotify/fsnotify v1.7.0
+	github.com/fsnotify/fsnotify v1.7.0 // 文件监视
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/natefinch/lumberjack v2.0.0+incompatible
+	github.com/natefinch/lumberjack v2.0.0+incompatible // 日志切割
 	github.com/spf13/viper v1.19.0
 	go.uber.org/zap v1.27.0
 )

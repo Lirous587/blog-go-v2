@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"blog/controller"
 	"blog/middlewares"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -37,7 +36,7 @@ func SetupRouter(mode string) *gin.Engine {
 	essayCtrl := InitEssayCtrl()
 	indexCtrl := InitIndexCtrl()
 	imgCtrl := InitImgCtrl()
-
+	userCtrl := InitUserCtrl()
 	v0 := r.Group("/api/base")
 	v0.Use(middlewares.SaveUserIp())
 	{
@@ -54,10 +53,10 @@ func SetupRouter(mode string) *gin.Engine {
 
 	v2 := r.Group("/api/admin")
 	{
-		v2.POST("/login", controller.LoginHandler)
-		//v2.POST("/signup", controller.SignupHandler)
-		//v2.POST("/logout", controller.LogoutHandler)
-		//v2.POST("/updateUserMsg", middlewares.JWTAuthMiddleware(), controller.UpdateUserMsgHandler)
+		v2.POST("/login", userCtrl.Login)
+		v2.POST("/signup", userCtrl.SignUp)
+		v2.POST("/logout", userCtrl.Logout)
+		v2.PUT("/update", middlewares.JWTAuthMiddleware(), userCtrl.Update)
 	}
 
 	v3 := r.Group("/api/admin")

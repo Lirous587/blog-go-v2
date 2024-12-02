@@ -5,7 +5,6 @@ import (
 	"blog/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"strings"
 )
 
 const (
@@ -14,18 +13,27 @@ const (
 	updateUserMsgSuccess = "修改个人信息成功"
 )
 
-// SignupHandler 注册
-func SignupHandler(c *gin.Context) {
+type UserCtrl struct {
+	service service.UsrService
+}
+
+func NewUserCtrl(service service.UsrService) *UserCtrl {
+	return &UserCtrl{
+		service: service,
+	}
+}
+
+func (ctrl *UserCtrl) SignUp(c *gin.Context) {
 	//1.获取参数和参数校验
-	var p = new(models.UserParams)
-	if err := c.ShouldBindJSON(p); err != nil {
-		zap.L().Error("c.ShouldBindJSON(p) failed", zap.Error(err))
+	var data = new(models.UserSignupParams)
+	if err := c.ShouldBindJSON(data); err != nil {
+		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
 	//2.业务处理
-	if err := service.Signup(p); err != nil {
-		zap.L().Error("logic.Signup(p) failed", zap.Error(err))
+	if err := ctrl.service.Signup(data); err != nil {
+		zap.L().Error("ctrl.service.Signup(data) failed", zap.Error(err))
 		ResponseError(c, CodeUserExist)
 		return
 	}
@@ -33,64 +41,60 @@ func SignupHandler(c *gin.Context) {
 	ResponseSuccess(c, signupSuccess)
 }
 
-// LoginHandler 登录
-func LoginHandler(c *gin.Context) {
+func (ctrl *UserCtrl) Login(c *gin.Context) {
 	//1.获取参数并检验
-	var p = new(models.User)
-	if err := c.ShouldBindJSON(p); err != nil {
-		zap.L().Error("c.ShouldBindJSON(p) failed", zap.Error(err))
+	var data = new(models.UserLoginParams)
+	if err := c.ShouldBindJSON(data); err != nil {
+		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
 	//2.业务处理
-	if err := service.Login(p); err != nil {
-		zap.L().Error("logic.Login() failed", zap.Error(err))
+	ret, err := ctrl.service.Login(data)
+	if err != nil {
+		zap.L().Error("ctrl.service.Login(data) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}
 	//3.返回响应
-	ResponseSuccess(c, gin.H{
-		"token": p.Token,
-	})
+	ResponseSuccess(c, ret)
 }
 
-// LogoutHandler 退出登录
-func LogoutHandler(c *gin.Context) {
-	//1.参数验证 --> 得到相应的token
-	authHeader := c.Request.Header.Get("Authorization")
-	parts := strings.SplitN(authHeader, " ", 2)
-	//得到token
-	token := parts[1]
-
-	//2.业务处理 --> 将该token储存在数据库中
-	if err := service.Logout(token); err != nil {
-		zap.L().Error("logic.Logout(token) failed", zap.Error(err))
-		ResponseError(c, CodeServeBusy)
-		return
-	}
-	//3.返回响应
-	ResponseSuccess(c, CodeSuccess)
+func (ctrl *UserCtrl) Logout(c *gin.Context) {
+	////1.参数验证 --> 得到相应的token
+	//authHeader := c.Request.Header.Get("Authorization")
+	//parts := strings.SplitN(authHeader, " ", 2)
+	////得到token
+	//token := parts[1]
+	////2.业务处理 --> 将该token储存在数据库中
+	//if err := ctrl.service.Logout(token); err != nil {
+	//	zap.L().Error("logic.Logout(token) failed", zap.Error(err))
+	//	ResponseError(c, CodeServeBusy)
+	//	return
+	//}
+	////3.返回响应
+	//ResponseSuccess(c, CodeSuccess)
 }
 
-// UpdateUserMsgHandler 修改用户信息
-func UpdateUserMsgHandler(c *gin.Context) {
+func (ctrl *UserCtrl) Update(c *gin.Context) {
 	//1.参数校验
-	var p = new(models.UserParams)
-	if err := c.ShouldBindJSON(p); err != nil {
-		zap.L().Error("c.ShouldBindJSON(p) failed", zap.Error(err))
+	var data = new(models.UserUpdateParams)
+	if err := c.ShouldBindJSON(data); err != nil {
+		zap.L().Error("c.ShouldBindJSON(data) failed", zap.Error(err))
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
 	//获取id
-	id, err := getUserId(c)
+	uid, err := getUserId(c)
 	if err != nil {
 		zap.L().Error("getUserId(c) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return
 	}
+	data.UID = uid
 
 	//2.业务处理
-	if err = service.UpdateUserMsg(p, id); err != nil {
+	if err = ctrl.service.Update(data); err != nil {
 		zap.L().Error("logic.UpdateUserMsg(user, id) failed", zap.Error(err))
 		ResponseError(c, CodeServeBusy)
 		return

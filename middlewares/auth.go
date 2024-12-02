@@ -3,7 +3,6 @@ package middlewares
 import (
 	"blog/controller"
 	"blog/pkg/jwt"
-	"blog/repository"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -38,13 +37,13 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			c.Abort()
 			return
 		}
-		if err := JWTInvalidToken(parts[1]); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"msg": authFailedMsg,
-			})
-			c.Abort()
-			return
-		}
+		//if err := JWTInvalidToken(parts[1]); err != nil {
+		//	c.JSON(http.StatusInternalServerError, gin.H{
+		//		"msg": authFailedMsg,
+		//	})
+		//	c.Abort()
+		//	return
+		//}
 
 		// parts[1]是获取到的tokenString，我们使用之前定义好的解析JWT的函数来解析它
 		mc, err := jwt.ParseToken(parts[1])
@@ -56,12 +55,13 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			return
 		}
 		// 将当前请求的userID信息保存到请求的上下文c上
-		c.Set(controller.CtxUserIDKey, mc.UserID)
+		c.Set(controller.CtxUserIDKey, mc.ID)
 		c.Next() // 后续的处理请求的函数中 可以用过c.Get(CtxUserIDKey) 来获取当前请求的用户信息
 	}
 }
 
-func JWTInvalidToken(token string) error {
-	//1.查看token是否在数据库中
-	return repository.CheckTokenIfInvalid(token)
-}
+//
+//func JWTInvalidToken(token string) error {
+//	//1.查看token是否在数据库中
+//	return repository.CheckTokenIfInvalid(token)
+//}
