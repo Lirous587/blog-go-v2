@@ -1,8 +1,8 @@
 package service
 
 import (
+	"blog/cache"
 	"blog/models"
-	"blog/pkg/jwt"
 	"blog/pkg/snowflake"
 	"blog/repository"
 	"blog/utils"
@@ -20,17 +20,19 @@ type UsrService interface {
 	Logout(data *models.UserLogoutParams) error
 }
 
-type UserRepoService struct {
+type UserCacheService struct {
 	repo repository.UserRepo
+	cch  cache.UserCache
 }
 
-func NewUserRepoService(repo repository.UserRepo) *UserRepoService {
-	return &UserRepoService{
+func NewUserRepoService(cch cache.UserCache, repo repository.UserRepo) *UserCacheService {
+	return &UserCacheService{
+		cch:  cch,
 		repo: repo,
 	}
 }
 
-func (s *UserRepoService) Signup(data *models.UserSignupParams) error {
+func (s *UserCacheService) Signup(data *models.UserSignupParams) error {
 	//1.判断用户是否存在
 	ok, err := s.repo.CheckExist(data)
 	if err != nil {
@@ -52,7 +54,7 @@ func (s *UserRepoService) Signup(data *models.UserSignupParams) error {
 	return s.repo.Save(user)
 }
 
-func (s *UserRepoService) Login(data *models.UserLoginParams) (*models.UserData, error) {
+func (s *UserCacheService) Login(data *models.UserLoginParams) (*models.UserData, error) {
 	encryptedPassword := utils.EncryptPassword(data.Password)
 	data.Password = encryptedPassword
 	// 身份校验
@@ -60,9 +62,9 @@ func (s *UserRepoService) Login(data *models.UserLoginParams) (*models.UserData,
 	if err != nil {
 		return nil, err
 	}
-	// jwt生成token
 	var token string
-	if token, err = jwt.GenToken(ret.UID); err != nil {
+	// 生成token 使用redis或jwt
+	if token, err = s.cch.GenToken(ret.UID); err != nil {
 		return nil, err
 	}
 	//将token保存
@@ -70,12 +72,10 @@ func (s *UserRepoService) Login(data *models.UserLoginParams) (*models.UserData,
 	return ret, nil
 }
 
-func (s *UserRepoService) Update(user *models.UserUpdateParams) error {
-	////从数据库中修改数据
-	//return repository.UpdateUserMsg(user, id)
+func (s *UserCacheService) Update(user *models.UserUpdateParams) error {
 	return nil
 }
 
-func (s *UserRepoService) Logout(token *models.UserLogoutParams) error {
+func (s *UserCacheService) Logout(token *models.UserLogoutParams) error {
 	return nil
 }

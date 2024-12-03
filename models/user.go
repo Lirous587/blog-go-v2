@@ -1,7 +1,7 @@
 package models
 
 type UserData struct {
-	UID      int64  `json:"uid string" db:"uid"`
+	UID      int64  `json:"uid,string" db:"uid"`
 	Name     string `json:"name" db:"name"`
 	Email    string `json:"email" db:"email"`
 	Password string `json:"-" db:"password"`
@@ -21,7 +21,7 @@ type UserLoginParams struct {
 }
 
 type UserLogoutParams struct {
-	UID   int64  `json:"uid string" db:"uid"`
+	UID   int64  `json:"uid,string" db:"uid"`
 	Name  string `db:"username" json:"name"`
 	Email string `db:"email" json:"email"`
 	Token string `json:"token"`

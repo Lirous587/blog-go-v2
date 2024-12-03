@@ -108,10 +108,12 @@ func InitImgCtrl() *controller.ImgCtrl {
 }
 
 func InitUserCtrl() *controller.UserCtrl {
-	var ser service.UsrService
+	var cch cache.UserCache
+	cch = cache.NewUserCacheRedis(client)
 	var repo repository.UserRepo
 	repo = repository.NewUserRepoMySQL(db)
-	ser = service.NewUserRepoService(repo)
+	var ser service.UsrService
+	ser = service.NewUserRepoService(cch, repo)
 	// 初始化控制器
 	return controller.NewUserCtrl(ser)
 }

@@ -3,13 +3,13 @@ package controller
 import (
 	"blog/models"
 	"blog/service"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
 const (
 	signupSuccess        = "注册成功"
-	userIDInvalid        = "无法获取该用户id"
 	updateUserMsgSuccess = "修改个人信息成功"
 )
 
@@ -84,6 +84,7 @@ func (ctrl *UserCtrl) Update(c *gin.Context) {
 		ResponseError(c, CodeParamInvalid)
 		return
 	}
+
 	//获取id
 	uid, err := getUserId(c)
 	if err != nil {
@@ -92,6 +93,8 @@ func (ctrl *UserCtrl) Update(c *gin.Context) {
 		return
 	}
 	data.UID = uid
+
+	fmt.Println(uid)
 
 	//2.业务处理
 	if err = ctrl.service.Update(data); err != nil {

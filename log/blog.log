@@ -12,3 +12,22 @@
 {"level":"ERROR","time":"2024-12-02T23:17:24.730+0800","caller":"controller/user.go:36","msg":"ctrl.service.Signup(data) failed","error":"用户已存在"}
 {"level":"ERROR","time":"2024-12-02T23:17:41.989+0800","caller":"controller/user.go:36","msg":"ctrl.service.Signup(data) failed","error":"sql: converting argument $1 type: unsupported type models.UserData, a struct"}
 {"level":"ERROR","time":"2024-12-02T23:21:44.558+0800","caller":"controller/user.go:48","msg":"c.ShouldBindJSON(data) failed","error":"invalid character '}' looking for beginning of object key string"}
+{"level":"ERROR","time":"2024-12-03T18:14:31.490+0800","caller":"controller/user.go:54","msg":"ctrl.service.Login(data) failed","error":"用户身份验证失败"}
+{"level":"INFO","time":"2024-12-03T18:15:41.053+0800","caller":"service/user.go:62","msg":"Validate start"}
+{"level":"ERROR","time":"2024-12-03T18:15:41.102+0800","caller":"controller/user.go:54","msg":"ctrl.service.Login(data) failed","error":"用户身份验证失败"}
+{"level":"INFO","time":"2024-12-03T18:16:22.712+0800","caller":"service/user.go:63","msg":"Validate start"}
+{"level":"ERROR","time":"2024-12-03T18:16:22.771+0800","caller":"controller/user.go:54","msg":"ctrl.service.Login(data) failed","error":"用户身份验证失败"}
+{"level":"INFO","time":"2024-12-03T18:16:50.596+0800","caller":"service/user.go:63","msg":"Validate start"}
+{"level":"INFO","time":"2024-12-03T18:16:50.642+0800","caller":"service/user.go:68","msg":"gentoken start"}
+{"level":"INFO","time":"2024-12-03T18:16:50.642+0800","caller":"service/user.go:78","msg":"gentoken end"}
+{"level":"INFO","time":"2024-12-03T18:40:12.205+0800","caller":"service/user.go:71","msg":"GenToken start"}
+{"level":"INFO","time":"2024-12-03T18:40:12.264+0800","caller":"service/user.go:75","msg":"GenToken end"}
+{"level":"INFO","time":"2024-12-03T18:41:54.758+0800","caller":"service/user.go:71","msg":"GenToken start"}
+{"level":"INFO","time":"2024-12-03T18:41:54.767+0800","caller":"service/user.go:75","msg":"GenToken end"}
+{"level":"ERROR","time":"2024-12-03T18:47:33.835+0800","caller":"controller/user.go:54","msg":"ctrl.service.Login(data) failed","error":"invalid connection"}
+{"level":"ERROR","time":"2024-12-03T18:47:50.916+0800","caller":"controller/user.go:54","msg":"ctrl.service.Login(data) failed","error":"dial tcp 123.207.217.103:3307: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond."}
+{"level":"ERROR","time":"2024-12-03T23:29:45.489+0800","caller":"controller/user.go:83","msg":"c.ShouldBindJSON(data) failed","error":"EOF"}
+{"level":"ERROR","time":"2024-12-03T23:30:27.526+0800","caller":"controller/user.go:83","msg":"c.ShouldBindJSON(data) failed","error":"EOF"}
+{"level":"ERROR","time":"2024-12-03T23:31:00.873+0800","caller":"controller/user.go:83","msg":"c.ShouldBindJSON(data) failed","error":"EOF"}
+{"level":"ERROR","time":"2024-12-03T23:31:01.970+0800","caller":"controller/user.go:83","msg":"c.ShouldBindJSON(data) failed","error":"EOF"}
+{"level":"ERROR","time":"2024-12-03T23:31:47.443+0800","caller":"controller/user.go:83","msg":"c.ShouldBindJSON(data) failed","error":"EOF"}

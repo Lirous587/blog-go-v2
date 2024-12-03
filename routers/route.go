@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"blog/cache"
 	"blog/middlewares"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -37,77 +38,77 @@ func SetupRouter(mode string) *gin.Engine {
 	indexCtrl := InitIndexCtrl()
 	imgCtrl := InitImgCtrl()
 	userCtrl := InitUserCtrl()
-	v0 := r.Group("/api/base")
-	v0.Use(middlewares.SaveUserIp())
+	uCch := cache.UserCache(cache.NewUserCacheRedis(client))
+	userAuthMiddleware := middlewares.NewUserAuthMiddleware(uCch)
+	managerAuthMiddleware := middlewares.NewManagerAuthMiddleware()
+
+	indexGroup := r.Group("/api/base")
 	{
-		v0.GET("/index", indexCtrl.GetData)
+		indexGroup.GET("/index", middlewares.SaveUserIp(), indexCtrl.GetData)
+		indexGroup.GET("/essayList", essayCtrl.GetList)
+		indexGroup.GET("/essayContent", essayCtrl.Read)
+		indexGroup.POST("/essaySearch", essayCtrl.GetListBySearch)
+		indexGroup.GET("/heartWordsList", heartWordsCtl.GetList)
 	}
 
-	v1 := r.Group("/api/base")
+	userGroup := r.Group("/api/user")
 	{
-		v1.GET("/essayList", essayCtrl.GetList)
-		v1.GET("/essayContent", essayCtrl.Read)
-		v1.POST("/essaySearch", essayCtrl.GetListBySearch)
-		v1.GET("/heartWordsList", heartWordsCtl.GetList)
+		userGroup.POST("/login", userCtrl.Login)
+		userGroup.POST("/signup", userCtrl.SignUp)
+		userGroup.POST("/logout", userAuthMiddleware, userCtrl.Logout)
+		userGroup.PUT("/update", userAuthMiddleware, userCtrl.Update)
 	}
 
-	v2 := r.Group("/api/admin")
-	{
-		v2.POST("/login", userCtrl.Login)
-		v2.POST("/signup", userCtrl.SignUp)
-		v2.POST("/logout", userCtrl.Logout)
-		v2.PUT("/update", middlewares.JWTAuthMiddleware(), userCtrl.Update)
-	}
-
-	v3 := r.Group("/api/admin")
-	v3.Use(middlewares.JWTAuthMiddleware())
+	managerGroup := r.Group("/api/admin")
+	managerGroup.Use(managerAuthMiddleware)
 
 	{
+		//managerGroup.POST("/login", managerCtrl.Login)
 		// 上传图片
-		v3.POST("/uploadImg", imgCtrl.Upload)
+		managerGroup.POST("/uploadImg", imgCtrl.Upload)
 
 		// 主页数据
-		//v3NoCache.GET("/panel", controller.ResponseDataAboutManagerPanel)
+		//managerGroup.GET("/panel", controller.ResponseDataAboutManagerPanel)
 
 		//gallery
-		v3.GET("/galleryList", galleryCtl.GetList)
-		v3.POST("/gallery", galleryCtl.Create)
-		v3.DELETE("/gallery", galleryCtl.Delete)
-		v3.PUT("/gallery", galleryCtl.Update)
+		managerGroup.GET("/galleryList", galleryCtl.GetList)
+		managerGroup.POST("/gallery", galleryCtl.Create)
+		managerGroup.DELETE("/gallery", galleryCtl.Delete)
+		managerGroup.PUT("/gallery", galleryCtl.Update)
 
 		//galleryKind
-		v3.GET("/galleryKindList", galleryKindCtl.GetList)
-		v3.POST("/galleryKind", galleryKindCtl.Create)
-		v3.DELETE("/galleryKind", galleryKindCtl.Delete)
-		v3.PUT("/galleryKind", galleryKindCtl.Update)
+		managerGroup.GET("/galleryKindList", galleryKindCtl.GetList)
+		managerGroup.POST("/galleryKind", galleryKindCtl.Create)
+		managerGroup.DELETE("/galleryKind", galleryKindCtl.Delete)
+		managerGroup.PUT("/galleryKind", galleryKindCtl.Update)
 	}
 
-	v3Index := r.Group("/api/admin")
-	v3Index.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateIndexMiddleware(indexCtrl))
+	managerGroupIndex := r.Group("/api/admin")
+	managerGroupIndex.Use(managerAuthMiddleware, middlewares.UpdateIndexMiddleware(indexCtrl))
 	{
 		// kind
-		v3Index.POST("/kind", essayKindCtrl.Create)
-		v3Index.DELETE("/kind", essayKindCtrl.Delete)
-		v3Index.PUT("/kind", essayKindCtrl.Update)
+		managerGroupIndex.POST("/kind", essayKindCtrl.Create)
+		managerGroupIndex.DELETE("/kind", essayKindCtrl.Delete)
+		managerGroupIndex.PUT("/kind", essayKindCtrl.Update)
 
 		// label
-		v3Index.POST("/label", essayLabelCtrl.Create)
-		v3Index.DELETE("label", essayLabelCtrl.Delete)
-		v3Index.PUT("/label", essayLabelCtrl.Update)
+		managerGroupIndex.POST("/label", essayLabelCtrl.Create)
+		managerGroupIndex.DELETE("label", essayLabelCtrl.Delete)
+		managerGroupIndex.PUT("/label", essayLabelCtrl.Update)
 
 		//heartWord
-		v3Index.POST("/heartWords", heartWordsCtl.Create)
-		v3Index.DELETE("/heartWords", heartWordsCtl.Delete)
-		v3Index.PUT("/heartWords", heartWordsCtl.Update)
+		managerGroupIndex.POST("/heartWords", heartWordsCtl.Create)
+		managerGroupIndex.DELETE("/heartWords", heartWordsCtl.Delete)
+		managerGroupIndex.PUT("/heartWords", heartWordsCtl.Update)
 	}
 
-	v3Essay := r.Group("/api/admin")
-	v3Essay.Use(middlewares.JWTAuthMiddleware(), middlewares.UpdateIndexMiddleware(indexCtrl), middlewares.UpdateEssayDescMiddleware(essayCtrl))
+	managerGroupEssay := r.Group("/api/admin")
+	managerGroupEssay.Use(managerAuthMiddleware, middlewares.UpdateIndexMiddleware(indexCtrl), middlewares.UpdateEssayDescMiddleware(essayCtrl))
 	{
 		// essay
-		v3Essay.POST("/essay", essayCtrl.Create)
-		v3Essay.DELETE("/essay", essayCtrl.Delete)
-		v3Essay.PUT("/essay", essayCtrl.Update)
+		managerGroupEssay.POST("/essay", essayCtrl.Create)
+		managerGroupEssay.DELETE("/essay", essayCtrl.Delete)
+		managerGroupEssay.PUT("/essay", essayCtrl.Update)
 	}
 
 	r.NoRoute(func(c *gin.Context) {

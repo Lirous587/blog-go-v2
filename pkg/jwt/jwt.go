@@ -23,8 +23,7 @@ func init() {
 
 // GenToken 生成JWT
 func GenToken(uid int64) (string, error) {
-	expirationTime := time.Now().Add(time.Duration(viper.GetInt("auth.jwt_expire")) * time.Hour)
-
+	expirationTime := time.Now().Add(time.Duration(viper.GetInt("auth.expire_hour")) * time.Hour)
 	claims := &MyClaims{
 		uid: uid,
 		RegisteredClaims: jwt.RegisteredClaims{

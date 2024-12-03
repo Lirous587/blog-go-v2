@@ -1,21 +1,27 @@
 package utils
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"fmt"
+	"blog/pkg/jwt"
 )
 
-const secret = "lirous.com"
+type Token interface {
+	GenToken(uid int64) (string, error)
+	ParseToken(token string) (any, error)
+}
 
-func EncryptPassword(oPassword string) string {
-	// 创建一个 SHA-256 哈希对象
-	h := sha256.New()
+type JWTToken struct {
+}
 
-	// 将秘密值写入哈希对象
-	h.Write([]byte(secret))
+func NewJWTToken() *JWTToken {
+	return &JWTToken{}
+}
 
-	// 将原始密码写入哈希对象，计算哈希值，返回十六进制表示的哈希字符串
-	fmt.Println(hex.EncodeToString(h.Sum([]byte(oPassword))))
-	return hex.EncodeToString(h.Sum([]byte(oPassword)))
+// GenToken 生成JWT
+func (j *JWTToken) GenToken(uid int64) (string, error) {
+	return jwt.GenToken(uid)
+}
+
+// ParseToken 解析JWT
+func (j *JWTToken) ParseToken(token string) (any, error) {
+	return jwt.ParseToken(token)
 }

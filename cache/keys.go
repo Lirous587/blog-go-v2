@@ -5,6 +5,7 @@ const (
 	KeySearchKeyWordTimes = "keyword:searchTimes:"
 	KeyEssayKeyword       = "essay:keyword:"
 	KeyIndex              = "index:"
+	KeyUserToken          = "user:token:"
 )
 
 func getRedisKey(key string) string {
